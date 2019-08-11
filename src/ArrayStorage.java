@@ -1,57 +1,86 @@
+import java.util.Arrays;
+
 /**
  * Array based storage for Resumes
  */
 public class ArrayStorage {
     private Resume[] storage = new Resume[10000];
-    private int countResume = 0;
+    private int size = 0;
+    private int index = 0;
 
     void clear() {
-        for (int i = 0; i < countResume; i++) {
-            storage[i] = null;
-
-        }
-        countResume = 0;
+        Arrays.fill(storage, 0, size, null);
+        size = 0;
     }
 
     void save(Resume r) {
-        storage[countResume] = r;
-        countResume++;
+        if (size < storage.length) {
+            if (!isExist(r.uuid)) {
+                storage[size] = r;
+                size++;
+            } else {
+                System.out.println("Resume - " + r.uuid + " уже существует!");
+            }
+        } else {
+            System.out.println("База резюме переполнена!");
+        }
     }
 
     Resume get(String uuid) {
-        for (int i = 0; i < countResume; i++) {
-            if (storage[i].uuid == uuid) {
-                return storage[i];
-
-            }
+        if (isExist(uuid)) {
+            return storage[index];
+        } else {
+            message(uuid);
+            return null;
         }
-        return null;
     }
 
     void delete(String uuid) {
         int count;
-        for (count = 0; count < countResume; count++) {
-            if (storage[count].uuid == uuid)
-                break;
-                }
-        for (int k = count; k < countResume; k++)
-            storage[k] = storage[k + 1];
-
-        countResume--;
+        if (isExist(uuid)) {
+            for (count = 0; count < size; count++) {
+                if (storage[count].uuid == uuid)
+                    break;
+            }
+            for (int k = count; k < size; k++) {
+                storage[k] = storage[k + 1];
+            }
+            size--;
+        } else {
+            message(uuid);
+        }
     }
 
     /**
      * @return array, contains only Resumes in storage (without null)
      */
     Resume[] getAll() {
-        Resume[] resumes = new Resume[countResume];
-        for (int i = 0; i < countResume; i++) {
-            resumes[i] = storage[i];
+        return Arrays.copyOf(storage, size);
+    }
+
+    void update (Resume resume) {
+        if (isExist(resume.uuid)) {
+            storage[index] = resume;
+        } else {
+            message(resume.uuid);
         }
-        return resumes;
     }
 
     int size() {
-        return countResume;
+        return size;
+    }
+
+    private boolean isExist(String uuid) {
+        for (int i = 0; i < size; i++) {
+            if (storage[i].uuid == uuid) {
+                index = i;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void message(String uuid) {
+        System.out.println("Resume - " + uuid + " не найдено!");
     }
 }
