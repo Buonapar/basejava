@@ -15,11 +15,11 @@ public class ArrayStorage {
 
     public void save(Resume resume) {
         if (size < storage.length) {
-            if (!isExist(resume.uuid)) {
+            if (!isExist(resume.getUuid())) {
                 storage[size] = resume;
                 size++;
             } else {
-                System.out.println("Resume - " + resume.uuid + " уже существует!");
+                System.out.println("Resume - " + resume.getUuid() + " уже существует!");
             }
         } else {
             System.out.println("База резюме переполнена!");
@@ -38,24 +38,24 @@ public class ArrayStorage {
     public void delete(String uuid) {
         if (isExist(uuid)) {
             System.arraycopy(new Resume[]{storage[size - 1]}, 0, storage, index, 1);
-            System.arraycopy(new Resume[]{null}, 0, storage, size - 1, 1);
             size--;
         } else {
             reportError(uuid);
         }
     }
+
     /**
      * @return array, contains only Resumes in storage (without null)
      */
-    Resume[] getAll() {
+    public Resume[] getAll() {
         return Arrays.copyOf(storage, size);
     }
 
-    public void update (Resume resume) {
-        if (isExist(resume.uuid)) {
+    public void update(Resume resume) {
+        if (isExist(resume.getUuid())) {
             storage[index] = resume;
         } else {
-            reportError(resume.uuid);
+            reportError(resume.getUuid());
         }
     }
 
@@ -65,7 +65,7 @@ public class ArrayStorage {
 
     private boolean isExist(String uuid) {
         for (int i = 0; i < size; i++) {
-            if (storage[i].uuid.equals(uuid)) {
+            if (storage[i].getUuid().equals(uuid)) {
                 index = i;
                 return true;
             }
