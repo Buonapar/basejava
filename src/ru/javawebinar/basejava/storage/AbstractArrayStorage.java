@@ -72,8 +72,4 @@ public abstract class AbstractArrayStorage implements Storage {
     public int size() {
         return size;
     }
-
-    protected void reportError(String uuid) {
-        System.out.println("Resume - " + uuid + " не найдено!");
-    }
 }
