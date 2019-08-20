@@ -36,6 +36,11 @@ public class AbstractArrayStorageTest {
         Assert.assertEquals(resume, storage.get(UUID_2));
     }
 
+    @Test(expected = NotExistStorageException.class)
+    public void updateNotExist() {
+        storage.update(new Resume(UUID_4));
+    }
+
     @Test
     public void save() {
         storage.save(new Resume(UUID_4));
