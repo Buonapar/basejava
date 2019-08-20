@@ -3,10 +3,10 @@ package ru.javawebinar.basejava.storage;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import ru.javawebinar.basejava.exception.ExistStorageException;
 import ru.javawebinar.basejava.exception.NotExistStorageException;
+import ru.javawebinar.basejava.exception.StorageException;
 import ru.javawebinar.basejava.model.Resume;
-
-import static org.junit.Assert.*;
 
 public class AbstractArrayStorageTest {
     private Storage storage;
@@ -30,7 +30,10 @@ public class AbstractArrayStorageTest {
 
     @Test
     public void update() {
-
+        Resume resume = new Resume(UUID_2);
+        storage.update(resume);
+        Assert.assertEquals(3, storage.size());
+        Assert.assertEquals(resume, storage.get(UUID_2));
     }
 
     @Test
@@ -38,6 +41,25 @@ public class AbstractArrayStorageTest {
         storage.save(new Resume(UUID_4));
         Assert.assertEquals(4, storage.size());
         Assert.assertEquals(new Resume(UUID_4).getUuid(), storage.get(UUID_4).getUuid());
+    }
+
+    @Test(expected = ExistStorageException.class)
+    public void saveExist() {
+        storage.save(new Resume(UUID_2));
+    }
+
+    @Test(expected = StorageException.class)
+    public void saveStorageException() {
+        try {
+            storage.clear();
+            for (int i = 0; i < 10_000; i++) {
+                storage.save(new Resume());
+            }
+        } catch (StorageException e) {
+            Assert.fail("Exception not thrown StorageException");
+        }
+        storage.save(new Resume());
+
     }
 
     @Test
