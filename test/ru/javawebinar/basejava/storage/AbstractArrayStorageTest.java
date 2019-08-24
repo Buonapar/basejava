@@ -13,7 +13,7 @@ public abstract class AbstractArrayStorageTest {
     private static final String UUID_2 = "uuid2";
     private static final String UUID_3 = "uuid3";
     private static final String UUID_4 = "uuid4";
-    private Storage storage;
+    protected Storage storage;
     private static final Resume resumeUuid_1;
     private static final Resume resumeUuid_2;
     private static final Resume resumeUuid_3;
