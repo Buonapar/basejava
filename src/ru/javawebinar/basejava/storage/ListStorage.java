@@ -18,11 +18,6 @@ public class ListStorage extends AbstractStorage {
         return storage.size();
     }
 
-    @Override
-    public Resume[] getAll() {
-        return storage.toArray(new Resume[0]);
-    }
-
     protected Object searchKey(String uuid) {
         for (int i = 0; i < storage.size(); i++) {
             if (storage.get(i).getUuid().equals(uuid)) {
@@ -56,5 +51,10 @@ public class ListStorage extends AbstractStorage {
     @Override
     protected void storageUpdate(Resume resume, Object searchKey) {
         storage.set((int)searchKey, resume);
+    }
+
+    @Override
+    protected List<Resume> storageGetAll() {
+        return storage;
     }
 }
