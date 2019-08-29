@@ -6,7 +6,7 @@ import ru.javawebinar.basejava.model.Resume;
 import java.util.Arrays;
 import java.util.List;
 
-public abstract class AbstractArrayStorage extends AbstractStorage {
+public abstract class AbstractArrayStorage extends AbstractStorage<Integer> {
     protected static final int STORAGE_LIMIT = 10_000;
     protected Resume[] storage = new Resume[STORAGE_LIMIT];
     protected int size = 0;
@@ -15,7 +15,7 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
 
     protected abstract void fillDeletedElement(int index);
 
-    protected abstract Integer searchKey(String uuid);
+    protected abstract Integer getSearchKey(String uuid);
 
     public void clear() {
         Arrays.fill(storage, 0, size, null);
@@ -27,40 +27,40 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    protected boolean isExist(Object searchKey) {
-        int index = (int) searchKey;
+    protected boolean isExist(Integer searchKey) {
+        int index = searchKey;
         return index >= 0;
     }
 
     @Override
-    protected void storageSave(Resume resume, Object searchKey) {
+    protected void doSave(Resume resume, Integer searchKey) {
         if (size >= STORAGE_LIMIT) {
             throw new StorageException("Storage overflow", resume.getUuid());
         } else {
-            insertElement(resume, (int) searchKey);
+            insertElement(resume, searchKey);
             size++;
         }
     }
 
     @Override
-    protected Resume storageGet(Object searchKey) {
-        return storage[(int) searchKey];
+    protected Resume doGet(Integer searchKey) {
+        return storage[searchKey];
     }
 
     @Override
-    protected void storageDelete(Object searchKey) {
-        fillDeletedElement((int) searchKey);
+    protected void doDelete(Integer searchKey) {
+        fillDeletedElement(searchKey);
         size--;
         storage[size] = null;
     }
 
     @Override
-    protected void storageUpdate(Resume resume, Object searchKey) {
-        storage[(int) searchKey] = resume;
+    protected void doUpdate(Resume resume, Integer searchKey) {
+        storage[searchKey] = resume;
     }
 
     @Override
-    protected List<Resume> storageGetAll() {
+    protected List<Resume> doCopyAll() {
         return Arrays.asList(Arrays.copyOf(storage, size));
     }
 }
