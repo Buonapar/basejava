@@ -15,7 +15,7 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
 
     protected abstract void fillDeletedElement(int index);
 
-    protected abstract Object searchKey(String uuid);
+    protected abstract Integer searchKey(String uuid);
 
     public void clear() {
         Arrays.fill(storage, 0, size, null);

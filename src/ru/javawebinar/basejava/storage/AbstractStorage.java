@@ -23,6 +23,7 @@ public abstract class AbstractStorage implements Storage {
 
     protected abstract List<Resume> storageGetAll();
 
+    @Override
     public List<Resume> getAllSorted() {
         List<Resume> resumeList = storageGetAll();
         Collections.sort(resumeList);
@@ -31,41 +32,43 @@ public abstract class AbstractStorage implements Storage {
 
     @Override
     public void save(Resume resume) {
-        Object searchKey = searchKey(resume.getUuid());
-        if (isExist(searchKey)) {
-            throw new ExistStorageException(resume.getUuid());
-        } else {
-            storageSave(resume, searchKey);
-        }
+        Object searchKey = retrieveNotExistedSearchKey(resume.getUuid());
+        storageSave(resume, searchKey);
     }
 
     @Override
     public Resume get(String uuid) {
-        Object searchKey = searchKey(uuid);
-        if (isExist(searchKey)) {
-            return storageGet(searchKey);
-        } else {
-            throw new NotExistStorageException(uuid);
-        }
+        Object searchKey = retrieveExistedSearchKey(uuid);
+        return storageGet(searchKey);
     }
 
     @Override
     public void delete(String uuid) {
-        Object searchKey = searchKey(uuid);
-        if (!isExist(searchKey)) {
-            throw new NotExistStorageException(uuid);
-        } else {
-            storageDelete(searchKey);
-        }
+        Object searchKey = retrieveExistedSearchKey(uuid);
+        storageDelete(searchKey);
     }
 
     @Override
     public void update(Resume resume) {
-        Object searchKey = searchKey(resume.getUuid());
-        if (!isExist(searchKey)) {
-            throw new NotExistStorageException(resume.getUuid());
+        Object searchKey = retrieveExistedSearchKey(resume.getUuid());
+        storageUpdate(resume, searchKey);
+    }
+
+    private Object retrieveNotExistedSearchKey(String uuid) {
+        Object searchKey = searchKey(uuid);
+        if (isExist(searchKey)) {
+            throw new ExistStorageException(uuid);
         } else {
-            storageUpdate(resume, searchKey);
+            return searchKey;
+        }
+    }
+
+    private Object retrieveExistedSearchKey(String uuid) {
+        Object searchKey = searchKey(uuid);
+        if (!isExist(searchKey)) {
+            throw new NotExistStorageException(uuid);
+        } else {
+            return searchKey;
         }
     }
 }
