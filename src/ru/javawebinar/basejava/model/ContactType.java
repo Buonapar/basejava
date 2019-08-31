@@ -2,7 +2,7 @@ package ru.javawebinar.basejava.model;
 
 public enum ContactType {
     PHONE("Номер телефона"),
-    EMAIL("электронная почта"),
+    EMAIL("Электронная почта"),
     SKYPE("Логин Skype"),
     LINKEDIN("Профиль в LinkedIn");
 
