@@ -12,13 +12,13 @@ public class ResumeTestData {
     public static void main(String[] args) {
         Resume resume1 = new Resume("uuid1", "Petr Ivanov");
         List<String> achievement = new ArrayList<>();
-        List<String> qualifications = new ArrayList<>();
-        List<Company> experience = new ArrayList<>();
         achievement.add("Аналитический склад ума, сильная логика, креативность, инициативность. Пурист кода и архитектуры.");
         achievement.add("Реализация двухфакторной аутентификации для онлайн платформы управления проектами Wrike. Интеграция с Twilio," +
-                        " DuoSecurity, Google Authenticator, Jira, Zendesk.");
+                " DuoSecurity, Google Authenticator, Jira, Zendesk.");
+        List<String> qualifications = new ArrayList<>();
         qualifications.add("JEE AS: GlassFish (v2.1, v3), OC4J, JBoss, Tomcat, Jetty, WebLogic, WSO2");
         qualifications.add("Version control: Subversion, Git, Mercury, ClearCase, Perforce");
+        List<Company> experience = new ArrayList<>();
         experience.add(new Company("Luxoft (Deutsche Bank)",
                 YearMonth.of(2010, Month.DECEMBER), YearMonth.of(2012, Month.FEBRUARY),
                 "Ведущий программист",
