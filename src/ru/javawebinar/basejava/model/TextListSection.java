@@ -7,6 +7,7 @@ public class TextListSection implements Section {
     private List<String> descriptions;
 
     public TextListSection(List<String> descriptions) {
+        Objects.requireNonNull(descriptions, "descriptions must not be null");
         this.descriptions = descriptions;
     }
 

@@ -7,6 +7,7 @@ public class CompanySection implements Section {
     private List<Company> descriptions;
 
     public CompanySection(List<Company> descriptions) {
+        Objects.requireNonNull(descriptions, "descriptions must not be null");
         this.descriptions = descriptions;
     }
 

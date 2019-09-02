@@ -4,14 +4,17 @@ import java.time.YearMonth;
 import java.util.Objects;
 
 public class Company implements Comparable<Company>{
-    private String name;
-    private YearMonth startDate;
-    private YearMonth endDate;
-    private String position;
-    private String description;
+    private final Link homepage;
+    private final YearMonth startDate;
+    private final YearMonth endDate;
+    private final String position;
+    private final String description;
 
-    public Company(String name, YearMonth startDate, YearMonth endDate, String position, String description) {
-        this.name = name;
+    public Company(String name, String url, YearMonth startDate, YearMonth endDate, String position, String description) {
+        Objects.requireNonNull(startDate, "startDate must not be null");
+        Objects.requireNonNull(endDate, "endDate must not be null");
+        Objects.requireNonNull(position, "title must not be null");
+        this.homepage = new Link(name, url);
         this.startDate = startDate;
         this.endDate = endDate;
         this.position = position;
@@ -23,27 +26,16 @@ public class Company implements Comparable<Company>{
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Company company = (Company) o;
-        return name.equals(company.name) &&
+        return homepage.equals(company.homepage) &&
                 startDate.equals(company.startDate) &&
                 endDate.equals(company.endDate) &&
                 position.equals(company.position) &&
-                description.equals(company.description);
+                Objects.equals(description, company.description);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, startDate, endDate, position, description);
-    }
-
-    @Override
-    public String toString() {
-        return "Company{" +
-                "name='" + name + '\'' +
-                ", startDate=" + startDate +
-                ", endDate=" + endDate +
-                ", position='" + position + '\'' +
-                ", description='" + description + '\'' +
-                '}';
+        return Objects.hash(homepage, startDate, endDate, position, description);
     }
 
     @Override

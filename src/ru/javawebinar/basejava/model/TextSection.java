@@ -3,20 +3,21 @@ package ru.javawebinar.basejava.model;
 import java.util.Objects;
 
 public class TextSection implements Section {
-    private String text;
+    private String content;
 
-    public TextSection(String text) {
-        this.text = text;
+    public TextSection(String content) {
+        Objects.requireNonNull(content, "content must not be null");
+        this.content = content;
     }
 
     public String get() {
-        return text;
+        return content;
     }
 
     @Override
     public String toString() {
         return "TextSection{" +
-                "text='" + text + '\'' +
+                "content='" + content + '\'' +
                 '}';
     }
 
@@ -25,11 +26,11 @@ public class TextSection implements Section {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         TextSection that = (TextSection) o;
-        return text.equals(that.text);
+        return content.equals(that.content);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(text);
+        return Objects.hash(content);
     }
 }
