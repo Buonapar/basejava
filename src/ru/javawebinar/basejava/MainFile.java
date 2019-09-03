@@ -3,6 +3,9 @@ package ru.javawebinar.basejava;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class MainFile {
     public static void main(String[] args) {
@@ -28,6 +31,16 @@ public class MainFile {
             System.out.println(fis.read());
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+
+        System.out.println("\nСписок файлов в проекте:");
+        try {
+            Files.walk(Paths.get(dir.getPath()))
+                 .filter(Files::isRegularFile)
+                 .map(Path::getFileName)
+                 .forEach(System.out::println);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

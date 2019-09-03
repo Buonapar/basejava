@@ -1,24 +1,23 @@
 package ru.javawebinar.basejava.model;
 
-import java.time.YearMonth;
+import java.util.List;
 import java.util.Objects;
 
-public class Company implements Comparable<Company>{
+public class Company {
     private final Link homepage;
-    private final YearMonth startDate;
-    private final YearMonth endDate;
-    private final String position;
-    private final String description;
+    private final List<Position> positions;
 
-    public Company(String name, String url, YearMonth startDate, YearMonth endDate, String position, String description) {
-        Objects.requireNonNull(startDate, "startDate must not be null");
-        Objects.requireNonNull(endDate, "endDate must not be null");
-        Objects.requireNonNull(position, "title must not be null");
+    public Company(String name, String url, List<Position> positions) {
         this.homepage = new Link(name, url);
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.position = position;
-        this.description = description;
+        this.positions = positions;
+    }
+
+    public Link getHomepage() {
+        return homepage;
+    }
+
+    public List<Position> getPositions() {
+        return positions;
     }
 
     @Override
@@ -27,19 +26,19 @@ public class Company implements Comparable<Company>{
         if (o == null || getClass() != o.getClass()) return false;
         Company company = (Company) o;
         return homepage.equals(company.homepage) &&
-                startDate.equals(company.startDate) &&
-                endDate.equals(company.endDate) &&
-                position.equals(company.position) &&
-                Objects.equals(description, company.description);
+                positions.equals(company.positions);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(homepage, startDate, endDate, position, description);
+        return Objects.hash(homepage, positions);
     }
 
     @Override
-    public int compareTo(Company o) {
-        return startDate.compareTo(o.startDate);
+    public String toString() {
+        return "Company{" +
+                "homepage=" + homepage +
+                ", positions=" + positions +
+                '}';
     }
 }

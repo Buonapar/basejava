@@ -5,10 +5,11 @@ import ru.javawebinar.basejava.model.Resume;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class AbstractFileStorage extends AbstractStorage<File> {
+public abstract class AbstractFileStorage extends AbstractStorage<File> {
     private File directory;
 
     public AbstractFileStorage(File directory) {
@@ -22,8 +23,9 @@ public class AbstractFileStorage extends AbstractStorage<File> {
         this.directory = directory;
     }
 
-    protected void doWrite(Resume resume, File file) {
-    }
+    protected abstract void doWrite(Resume resume, File file);
+
+    protected abstract Resume doRead(File file);
 
     @Override
     protected File getSearchKey(String uuid) {
@@ -46,32 +48,42 @@ public class AbstractFileStorage extends AbstractStorage<File> {
     }
 
     @Override
-    protected Resume doGet(File searchKey) {
-        return null;
+    protected Resume doGet(File file) {
+        return doRead(file);
     }
 
     @Override
-    protected void doDelete(File searchKey) {
-
+    protected void doDelete(File file) {
+        file.delete();
     }
 
     @Override
-    protected void doUpdate(Resume resume, File searchKey) {
-
+    protected void doUpdate(Resume resume, File file) {
+        doWrite(resume, file);
     }
 
     @Override
     protected List<Resume> doCopyAll() {
-        return null;
+        List<Resume> resumes = new ArrayList<>();
+        for (File file : Objects.requireNonNull(directory.listFiles())) {
+            resumes.add(doRead(file));
+        }
+        return resumes;
     }
 
     @Override
     public void clear() {
-
+        for (File file : Objects.requireNonNull(directory.listFiles())) {
+                file.delete();
+        }
     }
 
     @Override
     public int size() {
+        int size = 0;
+        for (File file : Objects.requireNonNull(directory.listFiles())) {
+            size++;
+        }
         return 0;
     }
 }
