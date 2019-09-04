@@ -11,7 +11,7 @@ import ru.javawebinar.basejava.model.Resume;
 import java.util.Arrays;
 import java.util.List;
 
-public class AbstractStorageTest {
+public abstract class AbstractStorageTest {
     private static final String UUID_1 = "uuid1";
     private static final String UUID_2 = "uuid2";
     private static final String UUID_3 = "uuid3";
@@ -23,14 +23,10 @@ public class AbstractStorageTest {
     private static final Resume resumeUuid_4;
 
     static {
-        resumeUuid_1 = new Resume(UUID_1, "Федя");
-        resumeUuid_2 = new Resume(UUID_2, "Федя");
-        resumeUuid_3 = new Resume(UUID_3, "Федя");
-        resumeUuid_4 = new Resume(UUID_4, "Федя");
-        ResumeTestData.init(resumeUuid_1);
-        ResumeTestData.init(resumeUuid_2);
-        ResumeTestData.init(resumeUuid_3);
-        ResumeTestData.init(resumeUuid_4);
+        resumeUuid_1 = ResumeTestData.init(UUID_1, "Федя");
+        resumeUuid_2 = ResumeTestData.init(UUID_2, "Федя");
+        resumeUuid_3 = ResumeTestData.init(UUID_3, "Федя");
+        resumeUuid_4 = ResumeTestData.init(UUID_4, "Федя");
     }
 
     public AbstractStorageTest(Storage storage) {

@@ -6,8 +6,22 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Objects;
 
 public class MainFile {
+    private static void fileList(String directory) {
+        File file = new File(directory);
+        String[] dirList = file.list();
+        for (String dirName : Objects.requireNonNull(dirList)) {
+            File fileTemp = new File(directory + File.separator + dirName);
+            if (fileTemp.isFile()) {
+                System.out.println(dirName);
+            } else {
+                fileList(directory + File.separator + dirName);
+            }
+        }
+    }
+
     public static void main(String[] args) {
         String filePath = ".\\.gitignore";
 
@@ -34,13 +48,6 @@ public class MainFile {
         }
 
         System.out.println("\nСписок файлов в проекте:");
-        try {
-            Files.walk(Paths.get(dir.getPath()))
-                 .filter(Files::isRegularFile)
-                 .map(Path::getFileName)
-                 .forEach(System.out::println);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        fileList(dir.getPath());
     }
 }
