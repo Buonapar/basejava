@@ -3,21 +3,16 @@ package ru.javawebinar.basejava;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Objects;
 
 public class MainFile {
-    private static void fileList(String directory) {
-        File file = new File(directory);
-        String[] dirList = file.list();
-        for (String dirName : Objects.requireNonNull(dirList)) {
-            File fileTemp = new File(directory + File.separator + dirName);
-            if (fileTemp.isFile()) {
-                System.out.println(dirName);
+    private static void printListFiles(File dir) {
+        File[] files = dir.listFiles();
+        for (File file : Objects.requireNonNull(files)) {
+            if (file.isFile()) {
+                System.out.println(file.getName());
             } else {
-                fileList(directory + File.separator + dirName);
+                printListFiles(file);
             }
         }
     }
@@ -48,6 +43,6 @@ public class MainFile {
         }
 
         System.out.println("\nСписок файлов в проекте:");
-        fileList(dir.getPath());
+        printListFiles(dir);
     }
 }

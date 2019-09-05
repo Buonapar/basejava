@@ -9,13 +9,8 @@ import java.util.Collections;
 import java.util.List;
 
 public class ResumeTestData {
-    public static Resume init(String uuid, String fullName) {
+        public static Resume fillResume(String uuid, String fullName) {
         Resume resume = new Resume(uuid, fullName);
-        fill(resume);
-        return resume;
-    }
-
-    private static void fill(Resume resume) {
         List<String> achievement = new ArrayList<>();
         achievement.add("Аналитический склад ума, сильная логика, креативность, инициативность. Пурист кода и архитектуры.");
         achievement.add("Реализация двухфакторной аутентификации для онлайн платформы управления проектами Wrike. Интеграция с Twilio," +
@@ -43,6 +38,6 @@ public class ResumeTestData {
         resume.addSection(SectionType.ACHIEVEMENT, new TextListSection(achievement));
         resume.addSection(SectionType.QUALIFICATIONS, new TextListSection(qualifications));
         resume.addSection(SectionType.EXPERIENCE, new CompanySection(experience));
-        System.out.println(resume);
+        return resume;
     }
 }
