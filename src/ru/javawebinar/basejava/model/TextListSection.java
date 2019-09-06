@@ -1,10 +1,15 @@
 package ru.javawebinar.basejava.model;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
 public class TextListSection implements Section {
     private List<String> descriptions;
+
+    public TextListSection(String... descriptions) {
+        this(Arrays.asList(descriptions));
+    }
 
     public TextListSection(List<String> descriptions) {
         Objects.requireNonNull(descriptions, "descriptions must not be null");

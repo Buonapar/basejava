@@ -10,8 +10,9 @@ public class MainFile {
         File[] files = dir.listFiles();
         for (File file : Objects.requireNonNull(files)) {
             if (file.isFile()) {
-                System.out.println(file.getName());
+                System.out.println("File: " + file.getName());
             } else {
+                System.out.println("Directory: " + file.getName());
                 printListFiles(file);
             }
         }

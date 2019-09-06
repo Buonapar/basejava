@@ -1,10 +1,15 @@
 package ru.javawebinar.basejava.model;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
 public class CompanySection implements Section {
     private List<Company> descriptions;
+
+    public CompanySection(Company... companies) {
+        this(Arrays.asList(companies));
+    }
 
     public CompanySection(List<Company> descriptions) {
         Objects.requireNonNull(descriptions, "descriptions must not be null");

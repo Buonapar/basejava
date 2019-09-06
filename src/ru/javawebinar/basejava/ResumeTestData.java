@@ -5,7 +5,6 @@ import ru.javawebinar.basejava.model.*;
 import java.time.Month;
 import java.time.YearMonth;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class ResumeTestData {
@@ -20,15 +19,15 @@ public class ResumeTestData {
         qualifications.add("Version control: Subversion, Git, Mercury, ClearCase, Perforce");
         List<Company> experience = new ArrayList<>();
         experience.add(new Company("Luxoft (Deutsche Bank)", "",
-                new ArrayList<>(Collections.singletonList(new Position(YearMonth.of(2010, Month.DECEMBER), YearMonth.of(2012, Month.FEBRUARY),
+                new Company.Position(YearMonth.of(2010, Month.DECEMBER), YearMonth.of(2012, Month.FEBRUARY),
                         "Ведущий программист",
                         "Участие в проекте Deutsche Bank CRM (WebLogic, Hibernate, Spring, Spring MVC, SmartGWT, GWT, Jasper, Oracle)." +
                                 " Реализация клиентской и серверной части CRM. Реализация RIA-приложения для администрирования, мониторинга" +
-                                " и анализа результатов в области алгоритмического трейдинга. JPA, Spring, Spring-MVC, GWT, ExtGWT (GXT), Highstock, Commet, HTML5.")))));
+                                " и анализа результатов в области алгоритмического трейдинга. JPA, Spring, Spring-MVC, GWT, ExtGWT (GXT), Highstock, Commet, HTML5.")));
         experience.add(new Company("Java Online Projects", "",
-                new ArrayList<>(Collections.singletonList(new Position(YearMonth.of(2013, Month.OCTOBER), YearMonth.of(2019, Month.AUGUST),
+                new Company.Position(YearMonth.of(2013, Month.OCTOBER), YearMonth.of(2019, Month.AUGUST),
                         "Автор проекта.",
-                        "Создание, организация и проведение Java онлайн проектов и стажировок.")))));
+                        "Создание, организация и проведение Java онлайн проектов и стажировок.")));
         resume.addContact(ContactType.PHONE, "+7(921) 855-0482");
         resume.addContact(ContactType.EMAIL, "gkislin@yandex.ru");
         resume.addContact(ContactType.SKYPE, "grigory.kislin");
