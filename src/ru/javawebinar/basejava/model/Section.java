@@ -1,4 +1,6 @@
 package ru.javawebinar.basejava.model;
 
-interface Section {
+import java.io.Serializable;
+
+interface Section extends Serializable {
 }

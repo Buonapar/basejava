@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class CompanySection implements Section {
+    private static final long serialVersionUID = 1L;
     private List<Company> descriptions;
 
     public CompanySection(Company... companies) {
