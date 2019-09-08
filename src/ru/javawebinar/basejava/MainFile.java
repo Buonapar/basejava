@@ -6,14 +6,14 @@ import java.io.IOException;
 import java.util.Objects;
 
 public class MainFile {
-    private static void printListFiles(File dir) {
+    private static void printListFiles(File dir, String tab) {
         File[] files = dir.listFiles();
         for (File file : Objects.requireNonNull(files)) {
             if (file.isFile()) {
-                System.out.println("File: " + file.getName());
+                System.out.println(tab + file.getName());
             } else {
-                System.out.println("Directory: " + file.getName());
-                printListFiles(file);
+                System.out.println(tab + file.getName().toUpperCase());
+                printListFiles(file, "\t" + tab);
             }
         }
     }
@@ -28,7 +28,7 @@ public class MainFile {
             throw new RuntimeException("Error", e);
         }
 
-        File dir = new File("./src/ru/javawebinar/basejava");
+        File dir = new File("./");
         System.out.println(dir.isDirectory());
         String[] list = dir.list();
         if (list != null) {
@@ -44,6 +44,6 @@ public class MainFile {
         }
 
         System.out.println("\nСписок файлов в проекте:");
-        printListFiles(dir);
+        printListFiles(dir, "");
     }
 }
