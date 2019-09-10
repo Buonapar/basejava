@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ResumeTestData {
-        public static Resume fillResume(String uuid, String fullName) {
+    public static Resume fillResume(String uuid, String fullName) {
         Resume resume = new Resume(uuid, fullName);
         List<String> achievement = new ArrayList<>();
         achievement.add("Аналитический склад ума, сильная логика, креативность, инициативность. Пурист кода и архитектуры.");
@@ -28,6 +28,13 @@ public class ResumeTestData {
                 new Company.Position(YearMonth.of(2013, Month.OCTOBER), YearMonth.of(2019, Month.AUGUST),
                         "Автор проекта.",
                         "Создание, организация и проведение Java онлайн проектов и стажировок.")));
+        experience.add(new Company("Санкт-Петербургский национальный исследовательский университет информационных технологий, механики и оптики", ""
+                , new Company.Position(YearMonth.of(1993, Month.SEPTEMBER), YearMonth.of(1996, Month.JULY)
+                        , "Аспирантура"
+                        , "программист С, С++")
+                , new Company.Position(YearMonth.of(1987, Month.SEPTEMBER), YearMonth.of(1993, Month.JULY)
+                        , "Инженер"
+                        , "программист Fortran, C")));
         resume.addContact(ContactType.PHONE, "+7(921) 855-0482");
         resume.addContact(ContactType.EMAIL, "gkislin@yandex.ru");
         resume.addContact(ContactType.SKYPE, "grigory.kislin");

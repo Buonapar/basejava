@@ -2,8 +2,11 @@ package ru.javawebinar.basejava.storage;
 
 import ru.javawebinar.basejava.exception.StorageException;
 import ru.javawebinar.basejava.model.Resume;
+import ru.javawebinar.basejava.storage.strategy.SerializableStrategy;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -13,10 +16,11 @@ import java.util.stream.Collectors;
 
 public class PathStorage extends AbstractStorage<Path> {
     private Path directory;
-    private SerializableStrategy serializableStrategy = new ObjectStreamStorage();
+    private SerializableStrategy serializableStrategy;
 
-    public PathStorage(String dir) {
+    public PathStorage(String dir, SerializableStrategy serializableStrategy) {
         directory = Paths.get(dir);
+        this.serializableStrategy = serializableStrategy;
         Objects.requireNonNull(directory, "directory must not be null");
         if (!Files.isDirectory(directory) || !Files.isWritable(directory)) {
             throw new IllegalArgumentException(dir + " is not directory or is not writable");
