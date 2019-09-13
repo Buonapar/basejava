@@ -4,9 +4,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-public class TextListSection implements Section {
+public class TextListSection extends Section {
     private static final long serialVersionUID = 1L;
     private List<String> descriptions;
+
+    public TextListSection() {
+    }
 
     public TextListSection(String... descriptions) {
         this(Arrays.asList(descriptions));

@@ -10,9 +10,9 @@ public class MainFile {
         File[] files = dir.listFiles();
         for (File file : Objects.requireNonNull(files)) {
             if (file.isFile()) {
-                System.out.println(tab + file.getName());
+                System.out.println(tab + "F: " + file.getName());
             } else {
-                System.out.println(tab + file.getName().toUpperCase());
+                System.out.println(tab + "D: " + file.getName().toUpperCase());
                 printListFiles(file, "\t" + tab);
             }
         }
