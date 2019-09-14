@@ -77,14 +77,21 @@ public class DataStreamSerializer implements StreamSerializer {
                     }
                     resume.addSection(sectionType, new TextListSection(descriptions));
                 } else if (sectionType.equals(SectionType.EXPERIENCE)) {
+                    List<Company> companies = new ArrayList<>();
                     int countCompanies = dataInputStream.readInt();
                     for (int j = 0; j < countCompanies; j++) {
                         Link link = new Link(dataInputStream.readUTF(), dataInputStream.readUTF());
+                        List<Company.Position> positions = new ArrayList<>();
                         int countPositions = dataInputStream.readInt();
                         for (int k = 0; k < countPositions; k++) {
-                            Company.Position position = new Company.Position();
+                            Company.Position position = new Company.Position(YearMonth.parse(dataInputStream.readUTF())
+                                                                        , YearMonth.parse(dataInputStream.readUTF())
+                                                                        , dataInputStream.readUTF(), dataInputStream.readUTF());
+                            positions.add(position);
                         }
+                        companies.add(new Company(link, positions));
                     }
+                    resume.addSection(sectionType, new CompanySection(companies));
                 }
             }
             return resume;
