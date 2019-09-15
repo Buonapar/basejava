@@ -23,17 +23,24 @@ public class DataStreamSerializer implements StreamSerializer {
             Map<SectionType, Section> sections = resume.getSection();
             dataOutputStream.writeInt(sections.size());
             for (Map.Entry<SectionType, Section> entry : sections.entrySet()) {
-                dataOutputStream.writeUTF(entry.getKey().name());
-                if (entry.getKey().equals(SectionType.OBJECTIVE) || entry.getKey().equals(SectionType.PERSONAL)) {
-                    dataOutputStream.writeUTF(((TextSection) entry.getValue()).get());
-                } else if (entry.getKey().equals(SectionType.ACHIEVEMENT) || entry.getKey().equals(SectionType.QUALIFICATIONS)) {
-                    List<String> descriptions = ((TextListSection) entry.getValue()).get();
-                    dataOutputStream.writeInt(descriptions.size());
-                    for (String description : descriptions) {
-                        dataOutputStream.writeUTF(description);
-                    }
-                } else if (entry.getKey().equals(SectionType.EXPERIENCE)) {
-                    List<Company> companies = ((CompanySection) entry.getValue()).get();
+                SectionType sectionType = SectionType.valueOf(entry.getKey().name());
+                dataOutputStream.writeUTF(sectionType.name());
+                Section section = entry.getValue();
+                switch (sectionType) {
+                    case OBJECTIVE:
+                    case PERSONAL:
+                        dataOutputStream.writeUTF(((TextSection) section).get());
+                        break;
+                    case ACHIEVEMENT:
+                    case QUALIFICATIONS:
+                        List<String> descriptions = ((TextListSection) section).get();
+                        dataOutputStream.writeInt(descriptions.size());
+                        for (String description : descriptions) {
+                            dataOutputStream.writeUTF(description);
+                        }
+                        break;
+                    case EDUCATION:
+                    case EXPERIENCE: List<Company> companies = ((CompanySection) section).get();
                     dataOutputStream.writeInt(companies.size());
                     for (Company company : companies) {
                         dataOutputStream.writeUTF(company.getHomepage().getName());
@@ -46,8 +53,8 @@ public class DataStreamSerializer implements StreamSerializer {
                             dataOutputStream.writeUTF(position.getTitle());
                             dataOutputStream.writeUTF(position.getDescription());
                         }
-
                     }
+                    break;
                 }
             }
 
@@ -67,31 +74,38 @@ public class DataStreamSerializer implements StreamSerializer {
             size = dataInputStream.readInt();
             for (int i = 0; i < size; i++) {
                 SectionType sectionType = SectionType.valueOf(dataInputStream.readUTF());
-                if (sectionType.equals(SectionType.OBJECTIVE) || sectionType.equals(SectionType.PERSONAL)) {
-                    resume.addSection(sectionType, new TextSection(dataInputStream.readUTF()));
-                } else if (sectionType.equals(SectionType.ACHIEVEMENT) || sectionType.equals(SectionType.QUALIFICATIONS)) {
-                    int countDescriptions = dataInputStream.readInt();
-                    List<String> descriptions = new ArrayList<>();
-                    for (int j = 0; j < countDescriptions; j++) {
-                        descriptions.add(dataInputStream.readUTF());
-                    }
-                    resume.addSection(sectionType, new TextListSection(descriptions));
-                } else if (sectionType.equals(SectionType.EXPERIENCE)) {
-                    List<Company> companies = new ArrayList<>();
-                    int countCompanies = dataInputStream.readInt();
-                    for (int j = 0; j < countCompanies; j++) {
-                        Link link = new Link(dataInputStream.readUTF(), dataInputStream.readUTF());
-                        List<Company.Position> positions = new ArrayList<>();
-                        int countPositions = dataInputStream.readInt();
-                        for (int k = 0; k < countPositions; k++) {
-                            Company.Position position = new Company.Position(YearMonth.parse(dataInputStream.readUTF())
-                                                                        , YearMonth.parse(dataInputStream.readUTF())
-                                                                        , dataInputStream.readUTF(), dataInputStream.readUTF());
-                            positions.add(position);
+                List<Company> companies = new ArrayList<>();
+                switch (sectionType) {
+                    case OBJECTIVE:
+                    case PERSONAL:
+                        resume.addSection(sectionType, new TextSection(dataInputStream.readUTF()));
+                        break;
+                    case ACHIEVEMENT:
+                    case QUALIFICATIONS:
+                        int countDescriptions = dataInputStream.readInt();
+                        List<String> descriptions = new ArrayList<>();
+                        for (int j = 0; j < countDescriptions; j++) {
+                            descriptions.add(dataInputStream.readUTF());
                         }
-                        companies.add(new Company(link, positions));
-                    }
-                    resume.addSection(sectionType, new CompanySection(companies));
+                        resume.addSection(sectionType, new TextListSection(descriptions));
+                        break;
+                    case EDUCATION:
+                    case EXPERIENCE:
+                        int countCompanies = dataInputStream.readInt();
+                        for (int j = 0; j < countCompanies; j++) {
+                            Link link = new Link(dataInputStream.readUTF(), dataInputStream.readUTF());
+                            List<Company.Position> positions = new ArrayList<>();
+                            int countPositions = dataInputStream.readInt();
+                            for (int k = 0; k < countPositions; k++) {
+                                Company.Position position = new Company.Position(YearMonth.parse(dataInputStream.readUTF())
+                                        , YearMonth.parse(dataInputStream.readUTF())
+                                        , dataInputStream.readUTF(), dataInputStream.readUTF());
+                                positions.add(position);
+                            }
+                            companies.add(new Company(link, positions));
+                        }
+                        resume.addSection(sectionType, new CompanySection(companies));
+                        break;
                 }
             }
             return resume;
