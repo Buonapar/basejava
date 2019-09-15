@@ -18,7 +18,7 @@ public class ResumeTestData {
         qualifications.add("JEE AS: GlassFish (v2.1, v3), OC4J, JBoss, Tomcat, Jetty, WebLogic, WSO2");
         qualifications.add("Version control: Subversion, Git, Mercury, ClearCase, Perforce");
         List<Company> experience = new ArrayList<>();
-        experience.add(new Company("Luxoft (Deutsche Bank)", "",
+        experience.add(new Company("Luxoft (Deutsche Bank)", null,
                 new Company.Position(YearMonth.of(2010, Month.DECEMBER), YearMonth.of(2012, Month.FEBRUARY),
                         "Ведущий программист",
                         "Участие в проекте Deutsche Bank CRM (WebLogic, Hibernate, Spring, Spring MVC, SmartGWT, GWT, Jasper, Oracle)." +

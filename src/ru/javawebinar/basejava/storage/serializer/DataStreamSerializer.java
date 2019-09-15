@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 public class DataStreamSerializer implements StreamSerializer {
+
     @Override
     public void doWrite(Resume resume, OutputStream os) throws IOException {
         try (DataOutputStream dataOutputStream = new DataOutputStream(os)) {
@@ -40,21 +41,22 @@ public class DataStreamSerializer implements StreamSerializer {
                         }
                         break;
                     case EDUCATION:
-                    case EXPERIENCE: List<Company> companies = ((CompanySection) section).get();
-                    dataOutputStream.writeInt(companies.size());
-                    for (Company company : companies) {
-                        dataOutputStream.writeUTF(company.getHomepage().getName());
-                        dataOutputStream.writeUTF(company.getHomepage().getUrl());
-                        List<Company.Position> positions = company.getPositions();
-                        dataOutputStream.writeInt(positions.size());
-                        for (Company.Position position : positions) {
-                            dataOutputStream.writeUTF(position.getStartDate().toString());
-                            dataOutputStream.writeUTF(position.getEndDate().toString());
-                            dataOutputStream.writeUTF(position.getTitle());
-                            dataOutputStream.writeUTF(position.getDescription());
+                    case EXPERIENCE:
+                        List<Company> companies = ((CompanySection) section).get();
+                        dataOutputStream.writeInt(companies.size());
+                        for (Company company : companies) {
+                            dataOutputStream.writeUTF(company.getHomepage().getName());
+                            dataOutputStream.writeUTF(company.getHomepage().getUrl());
+                            List<Company.Position> positions = company.getPositions();
+                            dataOutputStream.writeInt(positions.size());
+                            for (Company.Position position : positions) {
+                                dataOutputStream.writeUTF(position.getStartDate().toString());
+                                dataOutputStream.writeUTF(position.getEndDate().toString());
+                                dataOutputStream.writeUTF(position.getTitle());
+                                dataOutputStream.writeUTF(position.getDescription());
+                            }
                         }
-                    }
-                    break;
+                        break;
                 }
             }
 
