@@ -5,28 +5,37 @@ import ru.javawebinar.basejava.model.*;
 import java.io.*;
 import java.time.YearMonth;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.Map;
+import java.util.Objects;
 
 public class DataStreamSerializer implements StreamSerializer {
+
+    private <T> void writeWithExeption(Collection<T> collect, DataOutputStream dataOutputStream, WriteWithExeption<T> action) throws IOException {
+        Objects.requireNonNull(collect);
+        Objects.requireNonNull(dataOutputStream);
+        Objects.requireNonNull(action);
+        dataOutputStream.writeInt(collect.size());
+        for (T t : collect) {
+            action.write(t);
+        }
+    }
 
     @Override
     public void doWrite(Resume resume, OutputStream os) throws IOException {
         try (DataOutputStream dataOutputStream = new DataOutputStream(os)) {
             dataOutputStream.writeUTF(resume.getUuid());
             dataOutputStream.writeUTF(resume.getFullName());
-            Map<ContactType, String> contacts = resume.getContact();
-            dataOutputStream.writeInt(contacts.size());
-            for (Map.Entry<ContactType, String> entry : contacts.entrySet()) {
-                dataOutputStream.writeUTF(entry.getKey().name());
-                dataOutputStream.writeUTF(entry.getValue());
-            }
-            Map<SectionType, Section> sections = resume.getSection();
-            dataOutputStream.writeInt(sections.size());
-            for (Map.Entry<SectionType, Section> entry : sections.entrySet()) {
-                SectionType sectionType = SectionType.valueOf(entry.getKey().name());
+
+            writeWithExeption(resume.getContact().entrySet(), dataOutputStream, contact -> {
+                dataOutputStream.writeUTF(contact.getKey().name());
+                dataOutputStream.writeUTF(contact.getValue());
+            });
+
+            writeWithExeption(resume.getSection().entrySet(), dataOutputStream, sectionEntry -> {
+                Section section = sectionEntry.getValue();
+                SectionType sectionType = SectionType.valueOf(sectionEntry.getKey().name());
                 dataOutputStream.writeUTF(sectionType.name());
-                Section section = entry.getValue();
                 switch (sectionType) {
                     case OBJECTIVE:
                     case PERSONAL:
@@ -34,32 +43,23 @@ public class DataStreamSerializer implements StreamSerializer {
                         break;
                     case ACHIEVEMENT:
                     case QUALIFICATIONS:
-                        List<String> descriptions = ((TextListSection) section).get();
-                        dataOutputStream.writeInt(descriptions.size());
-                        for (String description : descriptions) {
-                            dataOutputStream.writeUTF(description);
-                        }
+                        writeWithExeption(((TextListSection) section).get(), dataOutputStream, dataOutputStream::writeUTF);
                         break;
                     case EDUCATION:
                     case EXPERIENCE:
-                        List<Company> companies = ((CompanySection) section).get();
-                        dataOutputStream.writeInt(companies.size());
-                        for (Company company : companies) {
+                        writeWithExeption(((CompanySection) section).get(), dataOutputStream, company -> {
                             dataOutputStream.writeUTF(company.getHomepage().getName());
                             dataOutputStream.writeUTF(company.getHomepage().getUrl());
-                            List<Company.Position> positions = company.getPositions();
-                            dataOutputStream.writeInt(positions.size());
-                            for (Company.Position position : positions) {
+                            writeWithExeption(company.getPositions(), dataOutputStream, position -> {
                                 dataOutputStream.writeUTF(position.getStartDate().toString());
                                 dataOutputStream.writeUTF(position.getEndDate().toString());
                                 dataOutputStream.writeUTF(position.getTitle());
                                 dataOutputStream.writeUTF(position.getDescription());
-                            }
-                        }
+                            });
+                        });
                         break;
                 }
-            }
-
+            });
         }
     }
 
@@ -113,4 +113,11 @@ public class DataStreamSerializer implements StreamSerializer {
             return resume;
         }
     }
+
+    @FunctionalInterface
+    private interface WriteWithExeption<T> {
+        void write(T t) throws IOException;
+    }
+
+
 }
