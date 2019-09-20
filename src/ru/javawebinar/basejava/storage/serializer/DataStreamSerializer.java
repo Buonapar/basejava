@@ -101,12 +101,12 @@ public class DataStreamSerializer implements StreamSerializer {
     private <T> List<T> readWithException(DataInputStream dataInputStream, ConsumerRead<T> action) throws IOException {
         Objects.requireNonNull(dataInputStream);
         Objects.requireNonNull(action);
-        List<T> ConsumerList = new ArrayList<>();
+        List<T> consumerList = new ArrayList<>();
         int size = dataInputStream.readInt();
         for (int i = 0; i < size; i++) {
-            ConsumerList.add(action.read());
+            consumerList.add(action.read());
         }
-        return ConsumerList;
+        return consumerList;
     }
 
     private void listWalk(DataInputStream dataInputStream, ConsumerAdd action) throws IOException {
