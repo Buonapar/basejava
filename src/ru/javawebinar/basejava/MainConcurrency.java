@@ -1,10 +1,7 @@
 package ru.javawebinar.basejava;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 public class MainConcurrency {
     public static final int THREADS_NUMBER = 10000;
@@ -63,11 +60,8 @@ public class MainConcurrency {
         });
         System.out.println(mainConcurrency.counter);
 
-//        deadLock(LOCK1, LOCK2);
-//        deadLock(LOCK2, LOCK1);
-
-        System.out.println(minValue(new int[]{1, 2, 3, 3, 2, 3, 4, 8}));
-        System.out.println(oddOrEven(new ArrayList<>(Arrays.asList(1, 2, 3, 3, 2, 3, 4, 8, 1))));
+        deadLock(LOCK1, LOCK2);
+        deadLock(LOCK2, LOCK1);
     }
 
     private synchronized void inc() {
@@ -95,17 +89,5 @@ public class MainConcurrency {
                 }
             }
         }).start();
-    }
-
-    private static int minValue(int[] values) {
-        AtomicInteger count = new AtomicInteger((int) Arrays.stream(values).distinct().count() - 1);
-        return Arrays.stream(values).sorted().distinct().reduce(0, ((left, right) -> left + (int) (right * Math.pow(10, count.getAndDecrement()))));
-    }
-
-
-    private static List<Integer> oddOrEven(List<Integer> integers) {
-        return integers.stream().filter(x ->
-                (integers.stream().reduce(0, Integer::sum) % 2 == 0) == (x % 2 != 0))
-                .collect(Collectors.toList());
     }
 }
