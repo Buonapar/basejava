@@ -12,12 +12,17 @@ public class MainStreams {
     }
 
     private static int minValue(int[] values) {
-        return Arrays.stream(values).sorted().distinct().reduce(0, ((left, right) -> left * 10 + right));
+        return Arrays.stream(values)
+                .sorted()
+                .distinct()
+                .reduce(0, ((left, right) -> left * 10 + right));
     }
 
 
     private static List<Integer> oddOrEven(List<Integer> integers) {
-        boolean isEven = integers.stream().mapToInt(p -> p).sum() % 2 == 0;
-        return integers.stream().collect(Collectors.partitioningBy((p) -> p % 2 == 0)).get(isEven);
+        boolean isEven = integers.stream()
+                .mapToInt(p -> p).sum() % 2 == 0;
+        return integers.stream()
+                .collect(Collectors.partitioningBy((p) -> p % 2 == 0)).get(!isEven);
     }
 }
