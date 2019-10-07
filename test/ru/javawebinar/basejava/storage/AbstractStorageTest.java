@@ -3,23 +3,22 @@ package ru.javawebinar.basejava.storage;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import ru.javawebinar.basejava.Config;
 import ru.javawebinar.basejava.ResumeTestData;
 import ru.javawebinar.basejava.exception.ExistStorageException;
 import ru.javawebinar.basejava.exception.NotExistStorageException;
 import ru.javawebinar.basejava.model.Resume;
 
 import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
 public abstract class AbstractStorageTest {
-    protected static final File STORAGE_DIR = new File("./storage_fs");
-    private static final String UUID_1 = "uuid1";
-    private static final String UUID_2 = "uuid2";
-    private static final String UUID_3 = "uuid3";
-    private static final String UUID_4 = "uuid4";
+    protected static final File STORAGE_DIR = Config.get().getStorageDir();
+    private static final String UUID_1 = "e1621cfd-0200-4b8d-b904-7f6d0778eb0a";
+    private static final String UUID_2 = "c40413ca-8ab2-49e5-bc27-2ca83d0b7de3";
+    private static final String UUID_3 = "ae1fa22b-2fc1-4edd-92b5-da18ff079cc9";
+    private static final String UUID_4 = "aeg59e2b-2fc1-4edd-92b5-da18ff079cc9";
     protected Storage storage;
     private static final Resume resumeUuid_1;
     private static final Resume resumeUuid_2;
