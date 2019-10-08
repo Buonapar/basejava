@@ -15,10 +15,10 @@ import java.util.List;
 
 public abstract class AbstractStorageTest {
     protected static final File STORAGE_DIR = Config.get().getStorageDir();
-    private static final String UUID_1 = "e1621cfd-0200-4b8d-b904-7f6d0778eb0a";
-    private static final String UUID_2 = "c40413ca-8ab2-49e5-bc27-2ca83d0b7de3";
-    private static final String UUID_3 = "ae1fa22b-2fc1-4edd-92b5-da18ff079cc9";
-    private static final String UUID_4 = "aeg59e2b-2fc1-4edd-92b5-da18ff079cc9";
+    private static final String UUID_1 = "uuid1cfd-0200-4b8d-b904-7f6d0778eb0a";
+    private static final String UUID_2 = "uuid23ca-8ab2-49e5-bc27-2ca83d0b7de3";
+    private static final String UUID_3 = "uuid322b-2fc1-4edd-92b5-da18ff079cc9";
+    private static final String UUID_4 = "uuid4e2b-2fc1-4edd-92b5-da18ff079cc9";
     protected Storage storage;
     private static final Resume resumeUuid_1;
     private static final Resume resumeUuid_2;

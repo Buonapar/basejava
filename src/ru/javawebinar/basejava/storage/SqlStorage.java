@@ -20,7 +20,7 @@ public class SqlStorage implements Storage {
 
     @Override
     public void clear() {
-        sqlHelper.connect((ABlockOfCodeSql<Object>) PreparedStatement::execute, "DELETE from resume");
+        sqlHelper.connect((ABlockOfCodeSql<Object>) PreparedStatement::execute, "DELETE from resume", null);
     }
 
     @Override
@@ -30,7 +30,7 @@ public class SqlStorage implements Storage {
             preparedStatement.setString(2, resume.getFullName());
             preparedStatement.execute();
             return null;
-        }, "INSERT INTO resume(uuid, full_name) VALUES (?, ?)");
+        }, "INSERT INTO resume(uuid, full_name) VALUES (?, ?)", resume.getUuid());
     }
 
     @Override
@@ -42,7 +42,7 @@ public class SqlStorage implements Storage {
                 throw new NotExistStorageException(uuid);
             }
             return new Resume(uuid, resultSet.getString("full_name"));
-        }, "SELECT * FROM resume r where r.uuid =?");
+        }, "SELECT * FROM resume r where r.uuid =?", uuid);
     }
 
     @Override
@@ -53,7 +53,7 @@ public class SqlStorage implements Storage {
                 throw new NotExistStorageException(uuid);
             }
             return null;
-        }, "DELETE FROM resume WHERE uuid = ?");
+        }, "DELETE FROM resume WHERE uuid = ?", uuid);
     }
 
     @Override
@@ -65,7 +65,7 @@ public class SqlStorage implements Storage {
                 resumes.add(new Resume(resultSet.getString("uuid"), resultSet.getString("full_name")));
             }
             return resumes;
-        }, "SELECT * FROM resume");
+        }, "SELECT * FROM resume", null);
     }
 
     @Override
@@ -77,7 +77,7 @@ public class SqlStorage implements Storage {
                 throw new NotExistStorageException(resume.getUuid());
             }
             return null;
-        }, "UPDATE resume SET full_name = ? WHERE uuid = ?");
+        }, "UPDATE resume SET full_name = ? WHERE uuid = ?", resume.getUuid());
     }
 
     @Override
@@ -86,6 +86,6 @@ public class SqlStorage implements Storage {
             ResultSet resultSet = preparedStatement.executeQuery();
             resultSet.next();
             return resultSet.getInt(1);
-        }, "SELECT COUNT(*) FROM resume");
+        }, "SELECT COUNT(*) FROM resume", null);
     }
 }
