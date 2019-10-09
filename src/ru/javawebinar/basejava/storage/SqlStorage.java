@@ -1,6 +1,7 @@
 package ru.javawebinar.basejava.storage;
 
 import ru.javawebinar.basejava.exception.NotExistStorageException;
+import ru.javawebinar.basejava.model.ContactType;
 import ru.javawebinar.basejava.model.Resume;
 import ru.javawebinar.basejava.sql.ABlockOfCodeSql;
 import ru.javawebinar.basejava.sql.SqlHelper;
@@ -10,6 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class SqlStorage implements Storage {
     public SqlHelper sqlHelper;
@@ -31,6 +33,16 @@ public class SqlStorage implements Storage {
             preparedStatement.execute();
             return null;
         }, "INSERT INTO resume(uuid, full_name) VALUES (?, ?)", resume.getUuid());
+
+        for (Map.Entry<ContactType, String> entry : resume.getContact().entrySet()) {
+            sqlHelper.connect(preparedStatement -> {
+                preparedStatement.setString(1, resume.getUuid());
+                preparedStatement.setString(2, entry.getKey().name());
+                preparedStatement.setString(3, entry.getValue());
+                preparedStatement.execute();
+                return null;
+            }, "INSERT INTO contact(resume_uuid, type, value) VALUES (?, ?, ?)", resume.getUuid());
+        }
     }
 
     @Override
@@ -41,8 +53,18 @@ public class SqlStorage implements Storage {
             if (!resultSet.next()) {
                 throw new NotExistStorageException(uuid);
             }
-            return new Resume(uuid, resultSet.getString("full_name"));
-        }, "SELECT * FROM resume r where r.uuid =?", uuid);
+            Resume resume = new Resume(uuid, resultSet.getString("full_name"));
+            do {
+                String value = resultSet.getString("value");
+                ContactType type = ContactType.valueOf(resultSet.getString("type"));
+                resume.addContact(type, value);
+            }while (resultSet.next());
+
+            return  resume;
+        }, "        SELECT * FROM resume r " +
+                "LEFT JOIN contact c " +
+                "       ON r.uuid = c.resume_uuid " +
+                "    WHERE r.uuid =?", uuid);
     }
 
     @Override
@@ -65,7 +87,7 @@ public class SqlStorage implements Storage {
                 resumes.add(new Resume(resultSet.getString("uuid"), resultSet.getString("full_name")));
             }
             return resumes;
-        }, "SELECT * FROM resume", null);
+        }, "SELECT * FROM resume ORDER BY full_name, uuid", null);
     }
 
     @Override

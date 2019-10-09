@@ -1,5 +1,6 @@
 package ru.javawebinar.basejava;
 
+import ru.javawebinar.basejava.model.ContactType;
 import ru.javawebinar.basejava.model.Resume;
 
 public class ResumeTestData {
@@ -30,10 +31,10 @@ public class ResumeTestData {
 //                , new Company.Position(YearMonth.of(1987, Month.SEPTEMBER), YearMonth.of(1993, Month.JULY)
 //                        , "Инженер"
 //                        , "программист Fortran, C")));
-//        resume.addContact(ContactType.PHONE, "+7(921) 855-0482");
-//        resume.addContact(ContactType.EMAIL, "gkislin@yandex.ru");
-//        resume.addContact(ContactType.SKYPE, "grigory.kislin");
-//        resume.addContact(ContactType.LINKEDIN, "https://www.linkedin.com/in/gkislin");
+        resume.addContact(ContactType.PHONE, "+7(921) 855-0482");
+        resume.addContact(ContactType.EMAIL, "gkislin@yandex.ru");
+        resume.addContact(ContactType.SKYPE, "grigory.kislin");
+        resume.addContact(ContactType.LINKEDIN, "https://www.linkedin.com/in/gkislin");
 //        resume.addSection(SectionType.OBJECTIVE, new TextSection("Ведущий стажировок и корпоративного обучения по Java Web и Enterprise технологиям"));
 //        resume.addSection(SectionType.PERSONAL, new TextSection("Аналитический склад ума, сильная логика, креативность, инициативность. Пурист кода и архитектуры."));
 //        resume.addSection(SectionType.ACHIEVEMENT, new TextListSection(achievement));

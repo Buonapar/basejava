@@ -12,13 +12,14 @@ import ru.javawebinar.basejava.model.Resume;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 public abstract class AbstractStorageTest {
     protected static final File STORAGE_DIR = Config.get().getStorageDir();
-    private static final String UUID_1 = "uuid1cfd-0200-4b8d-b904-7f6d0778eb0a";
-    private static final String UUID_2 = "uuid23ca-8ab2-49e5-bc27-2ca83d0b7de3";
-    private static final String UUID_3 = "uuid322b-2fc1-4edd-92b5-da18ff079cc9";
-    private static final String UUID_4 = "uuid4e2b-2fc1-4edd-92b5-da18ff079cc9";
+    private static final String UUID_1 = UUID.randomUUID().toString();
+    private static final String UUID_2 = UUID.randomUUID().toString();
+    private static final String UUID_3 = UUID.randomUUID().toString();
+    private static final String UUID_4 = UUID.randomUUID().toString();
     protected Storage storage;
     private static final Resume resumeUuid_1;
     private static final Resume resumeUuid_2;
@@ -26,10 +27,10 @@ public abstract class AbstractStorageTest {
     private static final Resume resumeUuid_4;
 
     static {
-        resumeUuid_1 = ResumeTestData.fillResume(UUID_1, "Федя");
-        resumeUuid_2 = ResumeTestData.fillResume(UUID_2, "Федя");
-        resumeUuid_3 = ResumeTestData.fillResume(UUID_3, "Федя");
-        resumeUuid_4 = ResumeTestData.fillResume(UUID_4, "Федя");
+        resumeUuid_1 = ResumeTestData.fillResume(UUID_1, "Федя1");
+        resumeUuid_2 = ResumeTestData.fillResume(UUID_2, "Федя2");
+        resumeUuid_3 = ResumeTestData.fillResume(UUID_3, "Федя3");
+        resumeUuid_4 = ResumeTestData.fillResume(UUID_4, "Федя4");
     }
 
     public AbstractStorageTest(Storage storage) {
