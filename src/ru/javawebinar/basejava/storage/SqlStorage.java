@@ -27,22 +27,23 @@ public class SqlStorage implements Storage {
 
     @Override
     public void save(Resume resume) {
-        sqlHelper.connect(preparedStatement -> {
-            preparedStatement.setString(1, resume.getUuid());
-            preparedStatement.setString(2, resume.getFullName());
-            preparedStatement.execute();
-            return null;
-        }, "INSERT INTO resume(uuid, full_name) VALUES (?, ?)", resume.getUuid());
-
-        for (Map.Entry<ContactType, String> entry : resume.getContact().entrySet()) {
-            sqlHelper.connect(preparedStatement -> {
+        sqlHelper.transactionalExecute(connection -> {
+            try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO resume(uuid, full_name) VALUES (?, ?)")){
                 preparedStatement.setString(1, resume.getUuid());
-                preparedStatement.setString(2, entry.getKey().name());
-                preparedStatement.setString(3, entry.getValue());
+                preparedStatement.setString(2, resume.getFullName());
                 preparedStatement.execute();
-                return null;
-            }, "INSERT INTO contact(resume_uuid, type, value) VALUES (?, ?, ?)", resume.getUuid());
-        }
+            }
+            try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO contact(resume_uuid, type, value) VALUES (?, ?, ?)")){
+                for (Map.Entry<ContactType, String> entry : resume.getContact().entrySet()) {
+                        preparedStatement.setString(1, resume.getUuid());
+                        preparedStatement.setString(2, entry.getKey().name());
+                        preparedStatement.setString(3, entry.getValue());
+                        preparedStatement.addBatch();
+                }
+                preparedStatement.executeBatch();
+            }
+            return null;
+        });
     }
 
     @Override
