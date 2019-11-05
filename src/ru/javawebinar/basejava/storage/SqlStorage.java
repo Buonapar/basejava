@@ -4,7 +4,6 @@ import ru.javawebinar.basejava.exception.NotExistStorageException;
 import ru.javawebinar.basejava.model.ContactType;
 import ru.javawebinar.basejava.model.Resume;
 import ru.javawebinar.basejava.sql.ABlockOfCodeSql;
-import ru.javawebinar.basejava.sql.ExceptionUtil;
 import ru.javawebinar.basejava.sql.SqlHelper;
 
 import java.sql.*;
@@ -33,7 +32,7 @@ public class SqlStorage implements Storage {
                 preparedStatement.setString(2, resume.getFullName());
                 preparedStatement.execute();
             }
-                insertContact(connection, resume);
+            insertContact(connection, resume);
             return null;
         });
     }
@@ -76,14 +75,8 @@ public class SqlStorage implements Storage {
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 String uuid = resultSet.getString("uuid");
-                resumes.computeIfAbsent(uuid, uuid1 -> {
-                    try {
-                        return new Resume(uuid1, resultSet.getString("full_name"));
-                    } catch (SQLException e) {
-                        throw ExceptionUtil.convertException(e);
-                    }
-                });
-                addContact(resultSet, resumes.get(uuid));
+                String fullName = resultSet.getString("full_name");
+                addContact(resultSet, resumes.computeIfAbsent(uuid, uuid1 -> new Resume(uuid1, fullName)));
             }
             return new ArrayList<>(resumes.values());
         }, "        SELECT * FROM resume r " +
@@ -106,7 +99,7 @@ public class SqlStorage implements Storage {
                 preparedStatement.setString(1, resume.getUuid());
                 preparedStatement.execute();
             }
-                insertContact(connection, resume);
+            insertContact(connection, resume);
             return null;
         });
 
@@ -133,10 +126,10 @@ public class SqlStorage implements Storage {
         }
     }
 
-        private void addContact (ResultSet resultSet, Resume resume) throws SQLException {
-            String type = resultSet.getString("type");
-            if (type != null) {
-                resume.addContact(ContactType.valueOf(type), resultSet.getString("value"));
-            }
+    private void addContact(ResultSet resultSet, Resume resume) throws SQLException {
+        String type = resultSet.getString("type");
+        if (type != null) {
+            resume.addContact(ContactType.valueOf(type), resultSet.getString("value"));
         }
     }
+}
