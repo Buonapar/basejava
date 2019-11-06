@@ -1,18 +1,20 @@
 package ru.javawebinar.basejava;
 
-import ru.javawebinar.basejava.model.ContactType;
-import ru.javawebinar.basejava.model.Resume;
+import ru.javawebinar.basejava.model.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ResumeTestData {
     public static Resume fillResume(String uuid, String fullName) {
         Resume resume = new Resume(uuid, fullName);
-//        List<String> achievement = new ArrayList<>();
-//        achievement.add("Аналитический склад ума, сильная логика, креативность, инициативность. Пурист кода и архитектуры.");
-//        achievement.add("Реализация двухфакторной аутентификации для онлайн платформы управления проектами Wrike. Интеграция с Twilio," +
-//                " DuoSecurity, Google Authenticator, Jira, Zendesk.");
-//        List<String> qualifications = new ArrayList<>();
-//        qualifications.add("JEE AS: GlassFish (v2.1, v3), OC4J, JBoss, Tomcat, Jetty, WebLogic, WSO2");
-//        qualifications.add("Version control: Subversion, Git, Mercury, ClearCase, Perforce");
+        List<String> achievement = new ArrayList<>();
+        achievement.add("Аналитический склад ума, сильная логика, креативность, инициативность. Пурист кода и архитектуры.");
+        achievement.add("Реализация двухфакторной аутентификации для онлайн платформы управления проектами Wrike. Интеграция с Twilio," +
+                " DuoSecurity, Google Authenticator, Jira, Zendesk.");
+        List<String> qualifications = new ArrayList<>();
+        qualifications.add("JEE AS: GlassFish (v2.1, v3), OC4J, JBoss, Tomcat, Jetty, WebLogic, WSO2");
+        qualifications.add("Version control: Subversion, Git, Mercury, ClearCase, Perforce");
 //        List<Company> experience = new ArrayList<>();
 //        experience.add(new Company("Luxoft (Deutsche Bank)", null,
 //                new Company.Position(YearMonth.of(2010, Month.DECEMBER), YearMonth.of(2012, Month.FEBRUARY),
@@ -35,10 +37,10 @@ public class ResumeTestData {
         resume.addContact(ContactType.EMAIL, "gkislin@yandex.ru");
         resume.addContact(ContactType.SKYPE, "grigory.kislin");
         resume.addContact(ContactType.LINKEDIN, "https://www.linkedin.com/in/gkislin");
-//        resume.addSection(SectionType.OBJECTIVE, new TextSection("Ведущий стажировок и корпоративного обучения по Java Web и Enterprise технологиям"));
-//        resume.addSection(SectionType.PERSONAL, new TextSection("Аналитический склад ума, сильная логика, креативность, инициативность. Пурист кода и архитектуры."));
-//        resume.addSection(SectionType.ACHIEVEMENT, new TextListSection(achievement));
-//        resume.addSection(SectionType.QUALIFICATIONS, new TextListSection(qualifications));
+        resume.addSection(SectionType.OBJECTIVE, new TextSection("Ведущий стажировок и корпоративного обучения по Java Web и Enterprise технологиям"));
+        resume.addSection(SectionType.PERSONAL, new TextSection("Аналитический склад ума, сильная логика, креативность, инициативность. Пурист кода и архитектуры."));
+        resume.addSection(SectionType.ACHIEVEMENT, new TextListSection(achievement));
+        resume.addSection(SectionType.QUALIFICATIONS, new TextListSection(qualifications));
 //        resume.addSection(SectionType.EXPERIENCE, new CompanySection(experience));
         return resume;
     }
