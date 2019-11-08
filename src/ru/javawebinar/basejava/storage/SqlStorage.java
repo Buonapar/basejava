@@ -2,6 +2,7 @@ package ru.javawebinar.basejava.storage;
 
 import ru.javawebinar.basejava.exception.NotExistStorageException;
 import ru.javawebinar.basejava.model.*;
+import ru.javawebinar.basejava.sql.ABlockOfCodeAdd;
 import ru.javawebinar.basejava.sql.ABlockOfCodeSql;
 import ru.javawebinar.basejava.sql.SqlHelper;
 
@@ -45,26 +46,13 @@ public class SqlStorage implements Storage {
                 preparedStatement.setString(1, uuid);
                 ResultSet resultSet = preparedStatement.executeQuery();
                 if (!resultSet.next()) {
-                throw new NotExistStorageException(uuid);
-            }
+                    throw new NotExistStorageException(uuid);
+                }
                 resume = new Resume(uuid, resultSet.getString("full_name"));
             }
 
-            try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM contact c WHERE c.resume_uuid=?")) {
-                preparedStatement.setString(1, uuid);
-                ResultSet resultSet = preparedStatement.executeQuery();
-                while (resultSet.next()) {
-                    addContact(resultSet, resume);
-                }
-            }
-
-            try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM section s WHERE s.resume_uuid=?")){
-                preparedStatement.setString(1, uuid);
-                ResultSet resultSet = preparedStatement.executeQuery();
-                while (resultSet.next()) {
-                    addSection(resultSet, resume);
-                }
-            }
+            tableSelectByUuid(connection, "contact", resume, this::addContact);
+            tableSelectByUuid(connection, "section", resume, this::addSection);
             return resume;
         });
     }
@@ -94,19 +82,8 @@ public class SqlStorage implements Storage {
                 }
             }
 
-            try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM contact")) {
-                ResultSet resultSet = preparedStatement.executeQuery();
-                while (resultSet.next()) {
-                    addContact(resultSet, resumes.get(resultSet.getString("resume_uuid")));
-                }
-            }
-
-            try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM section")) {
-                ResultSet resultSet = preparedStatement.executeQuery();
-                while (resultSet.next()) {
-                    addSection(resultSet, resumes.get(resultSet.getString("resume_uuid")));
-                }
-            }
+            tableSelect(connection, "contact", resumes, this::addContact);
+            tableSelect(connection, "section", resumes, this::addSection);
             return new ArrayList<>(resumes.values());
         });
     }
@@ -114,18 +91,19 @@ public class SqlStorage implements Storage {
     @Override
     public void update(Resume resume) {
         sqlHelper.transactionalExecute(connection -> {
+            String uuid = resume.getUuid();
             try (PreparedStatement preparedStatement = connection.prepareStatement("UPDATE resume SET full_name = ? WHERE uuid = ?")) {
                 preparedStatement.setString(1, resume.getFullName());
-                preparedStatement.setString(2, resume.getUuid());
+                preparedStatement.setString(2, uuid);
                 if (preparedStatement.executeUpdate() == 0) {
-                    throw new NotExistStorageException(resume.getUuid());
+                    throw new NotExistStorageException(uuid);
                 }
             }
-            try (PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM contact WHERE resume_uuid = ?")) {
-                preparedStatement.setString(1, resume.getUuid());
-                preparedStatement.execute();
-            }
+
+            tableDelete(connection, "contact", uuid);
+            tableDelete(connection, "section", uuid);
             insertContact(connection, resume);
+            insertSection(connection, resume);
             return null;
         });
 
@@ -156,17 +134,21 @@ public class SqlStorage implements Storage {
         try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO section(resume_uuid, type, value) VALUES (?, ?, ?)")) {
             for (Map.Entry<SectionType, Section> entry : resume.getSection().entrySet()) {
                 preparedStatement.setString(1, resume.getUuid());
-                preparedStatement.setString(2, entry.getKey().name());
+                SectionType sectionType = entry.getKey();
+                preparedStatement.setString(2, sectionType.name());
                 Section section = entry.getValue();
-                StringBuilder value = new StringBuilder();
-                if (section instanceof TextListSection) {
-                    for (String s : ((TextListSection) section).get()) {
-                        value.append(s).append('\n');
-                    }
-                } else {
-                    value.append(((TextSection) section).get());
+                String value = "";
+                switch (sectionType) {
+                    case OBJECTIVE:
+                    case PERSONAL:
+                        value = ((TextSection) section).get();
+                        break;
+                    case ACHIEVEMENT:
+                    case QUALIFICATIONS:
+                        value = String.join("\n", ((TextListSection) section).get());
+                        break;
                 }
-                preparedStatement.setString(3, value.toString());
+                preparedStatement.setString(3, value);
                 preparedStatement.addBatch();
             }
             preparedStatement.executeBatch();
@@ -183,9 +165,47 @@ public class SqlStorage implements Storage {
     private void addSection(ResultSet resultSet, Resume resume) throws SQLException {
         String type = resultSet.getString("type");
         String value = resultSet.getString("value");
+        Section section = null;
+
         if (type != null) {
-            resume.addSection(SectionType.valueOf(type),
-                    value.contains("\n") ? new TextListSection(value.split("\n")) : new TextSection(value));
+            SectionType sectionType = SectionType.valueOf(type);
+            switch (sectionType) {
+                case OBJECTIVE:
+                case PERSONAL:
+                    section = new TextSection(value);
+                    break;
+                case ACHIEVEMENT:
+                case QUALIFICATIONS:
+                    section = new TextListSection(value.split("\n"));
+                    break;
+            }
+            resume.addSection(sectionType, section);
+        }
+    }
+
+    private void tableDelete(Connection connection, String tableName, String uuid) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM " + tableName + " WHERE resume_uuid = ?")) {
+            preparedStatement.setString(1, uuid);
+            preparedStatement.execute();
+        }
+    }
+
+    private void tableSelect(Connection connection, String tableName, Map<String, Resume> resumes, ABlockOfCodeAdd block) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM " + tableName)) {
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                block.add(resultSet, resumes.get(resultSet.getString("resume_uuid")));
+            }
+        }
+    }
+
+    private void tableSelectByUuid(Connection connection, String tableName, Resume resume, ABlockOfCodeAdd block) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM " + tableName + " WHERE resume_uuid=?")) {
+            preparedStatement.setString(1, resume.getUuid());
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                block.add(resultSet, resume);
+            }
         }
     }
 }

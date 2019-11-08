@@ -27,7 +27,6 @@ public class ResumeServlet extends HttpServlet {
         req.setCharacterEncoding("UTF-8");
         resp.setCharacterEncoding("UTF-8");
         resp.setContentType("text/html; charset=UTF-8");
-        String name = req.getParameter("name");
         resp.getWriter().write("<table border=\"1\" align=\"center\">\n" +
                                     "<caption>Hello Resumes</caption>\n" +
                                     "<tr align=\"center\">\n" +
@@ -41,10 +40,5 @@ public class ResumeServlet extends HttpServlet {
                                    "</tr>\n");
         }
         resp.getWriter().write("</table>");
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doPost(req, resp);
     }
 }
