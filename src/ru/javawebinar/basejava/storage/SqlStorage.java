@@ -2,7 +2,6 @@ package ru.javawebinar.basejava.storage;
 
 import ru.javawebinar.basejava.exception.NotExistStorageException;
 import ru.javawebinar.basejava.model.*;
-import ru.javawebinar.basejava.sql.ABlockOfCodeAdd;
 import ru.javawebinar.basejava.sql.ABlockOfCodeSql;
 import ru.javawebinar.basejava.sql.SqlHelper;
 
@@ -13,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 public class SqlStorage implements Storage {
-    public SqlHelper sqlHelper;
+    private SqlHelper sqlHelper;
 
     public SqlStorage(String dbUrl, String dbUser, String dbPassword) {
         sqlHelper = new SqlHelper(() -> DriverManager.getConnection(dbUrl, dbUser, dbPassword));
@@ -207,5 +206,9 @@ public class SqlStorage implements Storage {
                 block.add(resultSet, resume);
             }
         }
+    }
+
+    private interface ABlockOfCodeAdd {
+        void add(ResultSet resultSet, Resume resume) throws SQLException;
     }
 }
