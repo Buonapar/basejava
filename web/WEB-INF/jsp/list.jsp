@@ -1,6 +1,7 @@
 <%@ page import="ru.javawebinar.basejava.model.ContactType" %>
 <%@ page import="ru.javawebinar.basejava.model.Resume" %>
 <%@ page import="java.util.List" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%--
   Created by IntelliJ IDEA.
   User: Алексей
@@ -24,17 +25,13 @@
                 <th>Имя</th>
                 <th>Email</th>
             </tr>
-            <c
-            <%
-                for (Resume resume : (List<Resume>)request.getAttribute("resumes")) {
-            %>
-            <tr>
-                <td><a href="resume?uuid=<%=resume.getUuid()%>"><%=resume.getFullName()%></a></td>
-                <td><%=resume.getContacts(ContactType.EMAIL)%></td>
-            </tr>
-            <%
-                }
-            %>
+            <c:forEach items="${resumes}" var="resume">
+                <jsp:useBean id="resume" type="ru.javawebinar.basejava.model.Resume"/>
+                <tr>
+                    <td><a href="resume?uuid=${resume.uuid}">${resume.fullName}</a></td>
+                    <td><%=resume.getContacts(ContactType.EMAIL)%></td>
+                </tr>
+            </c:forEach>
         </table>
     </section>
 <jsp:include page="fragments/footer.jsp"/>
