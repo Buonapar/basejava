@@ -1,6 +1,7 @@
 <%@ page import="ru.javawebinar.basejava.model.ContactType" %>
 <%@ page import="ru.javawebinar.basejava.model.Resume" %>
-<%@ page import="java.util.List" %><%--
+<%@ page import="java.util.List" %>
+<%--
   Created by IntelliJ IDEA.
   User: Алексей
   Date: 12.11.2019
@@ -15,6 +16,7 @@
     <title>Список всех резюме</title>
 </head>
 <body>
+<jsp:include page="fragments/header.jsp"/>
     <section>
         <table border="1" cellpadding="0" align="center">
             <caption>Hello Resumes</caption>
@@ -22,6 +24,7 @@
                 <th>Имя</th>
                 <th>Email</th>
             </tr>
+            <c
             <%
                 for (Resume resume : (List<Resume>)request.getAttribute("resumes")) {
             %>
@@ -34,5 +37,6 @@
             %>
         </table>
     </section>
+<jsp:include page="fragments/footer.jsp"/>
 </body>
 </html>
