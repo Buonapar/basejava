@@ -22,7 +22,7 @@ public class DataStreamSerializer implements StreamSerializer {
                 dataOutputStream.writeUTF(contact.getValue());
             });
 
-            writeWithException(resume.getSection().entrySet(), dataOutputStream, sectionEntry -> {
+            writeWithException(resume.getSections().entrySet(), dataOutputStream, sectionEntry -> {
                 Section section = sectionEntry.getValue();
                 SectionType sectionType = SectionType.valueOf(sectionEntry.getKey().name());
                 dataOutputStream.writeUTF(sectionType.name());

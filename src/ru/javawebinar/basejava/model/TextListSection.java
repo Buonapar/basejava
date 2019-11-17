@@ -24,11 +24,14 @@ public class TextListSection extends Section {
         return descriptions;
     }
 
-    @Override
-    public String toString() {
-        return "TextListSection{" +
-                "descriptions=" + descriptions +
-                '}';
+    public String toStringHtml() {
+        StringBuilder result = new StringBuilder();
+        result.append("<ul>");
+        for (String string : descriptions) {
+            result.append("<li>").append(string).append("</li>");
+        }
+        result.append("</ul>");
+        return result.toString();
     }
 
     @Override
@@ -42,5 +45,12 @@ public class TextListSection extends Section {
     @Override
     public int hashCode() {
         return Objects.hash(descriptions);
+    }
+
+    @Override
+    public String toString() {
+        return "TextListSection{" +
+                "descriptions=" + descriptions +
+                '}';
     }
 }
