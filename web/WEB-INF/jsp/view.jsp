@@ -21,7 +21,6 @@
             <jsp:useBean id="sectionEntry"
                          type="java.util.Map.Entry<ru.javawebinar.basejava.model.SectionType, ru.javawebinar.basejava.model.Section>"/>
         <h3><%=sectionEntry.getKey().getTitle()%><a> : </a></h3>
-            <c:set var="sectionType" value="${sectionEntry.key.title}"/>
             <%=sectionEntry.getValue().toPrintHtml()%>
         </c:forEach>
     </p>
