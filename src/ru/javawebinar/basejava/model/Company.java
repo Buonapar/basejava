@@ -8,11 +8,12 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 import java.time.YearMonth;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Company implements Serializable {
+public class Company implements Serializable, Comparable<Company> {
     private static final long serialVersionUID = 1L;
     private Link homepage;
     private List<Position> positions;
@@ -34,7 +35,35 @@ public class Company implements Serializable {
     }
 
     public List<Position> getPositions() {
+        Collections.sort(positions);
         return positions;
+    }
+
+    public YearMonth getDate() {
+        return getPositions().get(0).endDate;
+    }
+
+    public String toPrintHtml() {
+        StringBuilder result = new StringBuilder();
+        result.append("<table cellpadding=\"8\">");
+        for (Position position : getPositions()) {
+            result.append("<tr><td colspan=\"2\"><b>").
+                    append(toLink(homepage)).
+                    append("</b></td></tr>").
+                    append(position.toPrintHtml());
+        }
+        result.append("</table>");
+        return result.toString();
+    }
+
+    private static String toLink(Link homepage) {
+        return homepage.getUrl().isEmpty() ? homepage.getName() :
+                "<a href='" + homepage.getUrl() + "'>" + homepage.getName() + "</a>";
+    }
+
+    @Override
+    public int compareTo(Company o) {
+        return o.getDate().compareTo(this.getDate());
     }
 
     @Override
@@ -60,7 +89,7 @@ public class Company implements Serializable {
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)
-    public static class Position implements Serializable{
+    public static class Position implements Serializable, Comparable<Position>{
         @XmlJavaTypeAdapter(YearMonthAdapter.class)
         private YearMonth startDate;
         @XmlJavaTypeAdapter(YearMonthAdapter.class)
@@ -99,6 +128,26 @@ public class Company implements Serializable {
 
         public String getDescription() {
             return description;
+        }
+
+        public String toPrintHtml(){
+            return "<tr><td width=\"130\" style=\"vertical-align: top\">" +
+                    formatDate(startDate) +
+                    " - " +
+                    formatDate(endDate) +
+                    "</td><td><b> " +
+                    title +
+                    "</b><br>" +
+                    description +
+                    "</td></tr>";
+        }
+        private String formatDate(YearMonth yearMonth) {
+            return yearMonth.getMonth().getValue() + "/" + yearMonth.getYear();
+        }
+
+        @Override
+        public int compareTo(Position o) {
+            return o.endDate.compareTo(this.endDate);
         }
 
         @Override

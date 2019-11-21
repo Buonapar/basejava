@@ -22,6 +22,11 @@ public class TextSection extends Section {
     }
 
     @Override
+    public String toPrintHtml() {
+        return content;
+    }
+
+    @Override
     public String toString() {
         return "TextSection{" +
                 "content='" + content + '\'' +

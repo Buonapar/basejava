@@ -7,23 +7,13 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <link rel="stylesheet" href="css/style.css">
     <jsp:useBean id="resume" type="ru.javawebinar.basejava.model.Resume" scope="request"/>
-    <c:if test="${resume.uuid == null}">
-        <title>Новое резюме</title>
-    </c:if>
-    <c:if test="${resume.uuid != null}">
-        <title>Резюме ${resume.fullName}</title>
-    </c:if>
+    <title>${param.uuid == null ? 'Новое резюме' : resume.fullName}</title>
 </head>
 <body>
 <jsp:include page="fragments/header.jsp"/>
 <section>
     <form method="post" action="resume" enctype="application/x-www-form-urlencoded">
-        <c:if test="${resume.uuid == null}">
-            <input type="hidden" name="uuid" value="null">
-        </c:if>
-        <c:if test="${resume.uuid != null}">
             <input type="hidden" name="uuid" value="${resume.uuid}">
-        </c:if>
         <dl>
             <dt>Имя</dt>
             <dd><input type="text" name="fullName" size="50" value="${resume.fullName}"></dd>
@@ -36,16 +26,14 @@
                </dl>
             </c:forEach>
             <c:forEach var="type" items="<%=SectionType.values()%>">
-                <dl>
-                    <dt>${type.title}</dt>
-                    <c:if test="${resume.uuid == null}">
-                        <dd><textarea rows="10" name="${type.name()}" cols="100" ></textarea>
+                    <c:if test="${type.name() != 'EXPERIENCE' && type.name() != 'EDUCATION'}">
+                        <dl>
+                        <dt>${type.title}</dt>
+                        <dd><textarea rows="10" name="${type.name()}" cols="100" >${resume.uuid == null ?
+                                                                                    "" : resume.sectionByType(type)}</textarea>
+                        </dd>
+                        </dl>
                     </c:if>
-                    <c:if test="${resume.uuid != null}">
-                        <dd><textarea rows="10" name="${type.name()}" cols="100" >${resume.sectionByType(type)}</textarea>
-                    </c:if>
-                    </dd>
-                </dl>
             </c:forEach>
         <hr>
         <button type="submit">Сохранить</button>

@@ -1,4 +1,3 @@
-<%@ page import="ru.javawebinar.basejava.model.SectionType" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
@@ -22,19 +21,8 @@
             <jsp:useBean id="sectionEntry"
                          type="java.util.Map.Entry<ru.javawebinar.basejava.model.SectionType, ru.javawebinar.basejava.model.Section>"/>
         <h3><%=sectionEntry.getKey().getTitle()%><a> : </a></h3>
-            <jsp:useBean id="textSection" type="ru.javawebinar.basejava.model.TextSection" scope="request"/>
-            <jsp:useBean id="textListSection" type="ru.javawebinar.basejava.model.TextListSection" scope="request"/>
             <c:set var="sectionType" value="${sectionEntry.key.title}"/>
-            <c:choose>
-                <c:when test="${sectionType == 'Личные качества' ||
-                                sectionType == 'Позиция'}">${textSection=sectionEntry.value;
-                                                             textSection.get()}
-                </c:when>
-                <c:when test="${sectionType == 'Достижения' ||
-                                sectionType == 'Квалификация'}">${textListSection=sectionEntry.value;
-                                                                  textListSection.toStringHtml()}
-                </c:when>
-            </c:choose>
+            <%=sectionEntry.getValue().toPrintHtml()%>
         </c:forEach>
     </p>
 </section>

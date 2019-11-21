@@ -30,7 +30,7 @@
                 </tr>
             </c:forEach>
         </table>
-        <p align="center"><a href="resume?uuid=null&action=add"><img src="img/add.png"></a></p>
+        <p align="center"><a href="resume?action=add"><img src="img/add.png"></a></p>
     </section>
 <jsp:include page="fragments/footer.jsp"/>
 </body>

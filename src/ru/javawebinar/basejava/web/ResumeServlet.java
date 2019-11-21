@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static ru.javawebinar.basejava.model.SectionType.*;
+
 public class ResumeServlet extends HttpServlet {
     private Storage storage;
 
@@ -45,8 +47,6 @@ public class ResumeServlet extends HttpServlet {
                 throw new IllegalArgumentException("Action " + action + " is illegal");
         }
         req.setAttribute("resume", resume);
-        req.setAttribute("textSection", new TextSection());
-        req.setAttribute("textListSection", new TextListSection());
         req.getRequestDispatcher("view".equals(action) ? "/WEB-INF/jsp/view.jsp" : "/WEB-INF/jsp/edit.jsp").forward(req, resp);
     }
 
@@ -56,7 +56,7 @@ public class ResumeServlet extends HttpServlet {
         String uuid = req.getParameter("uuid");
         String fullName = req.getParameter("fullName");
         Resume resume;
-        if (uuid.equals("null")) {
+        if (uuid.isEmpty()) {
             resume = new Resume(fullName);
         } else {
             resume = storage.get(uuid);
@@ -83,9 +83,11 @@ public class ResumeServlet extends HttpServlet {
                         resume.addSection(type, new TextListSection(value));
                         break;
                 }
+            } else if (type != EDUCATION && type != EXPERIENCE){
+                resume.getSections().remove(type);
             }
         }
-        if (uuid.equals("null")) {
+        if (uuid.isEmpty()) {
             storage.save(resume);
         } else {
             storage.update(resume);

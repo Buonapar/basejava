@@ -3,6 +3,7 @@ package ru.javawebinar.basejava.model;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -24,7 +25,17 @@ public class CompanySection extends Section {
     }
 
     public List<Company> get() {
+        Collections.sort(descriptions);
         return descriptions;
+    }
+
+    @Override
+    public String toPrintHtml() {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (Company company : get()) {
+            stringBuilder.append(company.toPrintHtml());
+        }
+        return stringBuilder.toString();
     }
 
     @Override

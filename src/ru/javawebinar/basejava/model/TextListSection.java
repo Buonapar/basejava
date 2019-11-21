@@ -35,6 +35,17 @@ public class TextListSection extends Section {
     }
 
     @Override
+    public String toPrintHtml() {
+        StringBuilder result = new StringBuilder();
+        result.append("<ul>");
+        for (String string : descriptions) {
+            result.append("<li>").append(string).append("</li>");
+        }
+        result.append("</ul>");
+        return result.toString();
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
