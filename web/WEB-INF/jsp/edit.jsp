@@ -34,6 +34,39 @@
                         </dd>
                         </dl>
                     </c:if>
+                <c:if test="${type.name() == 'EXPERIENCE' || type.name() == 'EDUCATION'}">
+                    <h3>${type.title}:</h3>
+                    <c:forEach var="companies" items="${resume.CompanySection(type).get()}">
+                        <dl>
+                            <dt style="margin-left: 10px">Название компании</dt>
+                            <dd><input type="text" name="${type.name()}" size="30" value="${companies.homepage.getName()}"></dd>
+                        </dl>
+                        <dl>
+                            <dt style="margin-left: 10px">Сайт компании</dt>
+                            <dd><input type="text" name="${type.name()}url" size="30" value="${companies.homepage.getUrl()}"></dd>
+                        </dl>
+                        <c:forEach var="positions" items="${companies.getPositions()}">
+                            <input type="hidden" name="${type.name()}numberPosition" value="${companies.getPositions().size()}" >
+                            <dt style="margin-left: 20px">Позиции</dt>
+                            <dl>
+                                <dt style="margin-left: 30px">Должность</dt>
+                                <dd><input type="text" name="${type.name()}title" size="30" value="${positions.getTitle()}"></dd>
+                            </dl>
+                            <dl>
+                                <dt style="margin-left: 30px">Дата начала работы</dt>
+                                <dd><input type="month" name="${type.name()}startDate" size="30" value="${positions.getStartDate()}"></dd>
+                            </dl>
+                            <dl>
+                                <dt style="margin-left: 30px">Дата окончания работы</dt>
+                                <dd><input type="month" name="${type.name()}endDate" size="30" value="${positions.getEndDate()}"></dd>
+                            </dl>
+                            <dl>
+                                <dt style="margin-left: 30px">Обязанности</dt>
+                                <dd><textarea rows="3" name="${type.name()}description" cols="70">${positions.getDescription()}</textarea></dd>
+                            </dl>
+                        </c:forEach>
+                    </c:forEach>
+                </c:if>
             </c:forEach>
         <hr>
         <button type="submit">Сохранить</button>

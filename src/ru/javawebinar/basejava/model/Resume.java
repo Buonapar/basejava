@@ -57,19 +57,22 @@ public class Resume implements Comparable<Resume>, Serializable {
     }
 
     public String sectionByType(SectionType type) {
-        if (sections.containsKey(type)) {
-            switch (type) {
-                case OBJECTIVE:
-                case PERSONAL:
-                    return ((TextSection) sections.get(type)).get();
-                case ACHIEVEMENT:
-                case QUALIFICATIONS:
-                    return String.join("\n", ((TextListSection) sections.get(type)).get());
-            }
-            return null;
-        } else {
+        if (!sections.containsKey(type)) {
             return "";
         }
+        switch (type) {
+           case OBJECTIVE:
+           case PERSONAL:
+                return ((TextSection) sections.get(type)).get();
+           case ACHIEVEMENT:
+           case QUALIFICATIONS:
+                return String.join("\n", ((TextListSection) sections.get(type)).get());
+           default:return "";
+        }
+    }
+
+    public CompanySection CompanySection(SectionType sectionType) {
+        return (CompanySection) sections.get(sectionType);
     }
 
     public void addContact(ContactType contactType, String contact) {

@@ -24,16 +24,6 @@ public class TextListSection extends Section {
         return descriptions;
     }
 
-    public String toStringHtml() {
-        StringBuilder result = new StringBuilder();
-        result.append("<ul>");
-        for (String string : descriptions) {
-            result.append("<li>").append(string).append("</li>");
-        }
-        result.append("</ul>");
-        return result.toString();
-    }
-
     @Override
     public String toPrintHtml() {
         StringBuilder result = new StringBuilder();

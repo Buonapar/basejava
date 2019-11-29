@@ -9,8 +9,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.YearMonth;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-import static ru.javawebinar.basejava.model.SectionType.*;
+import static ru.javawebinar.basejava.model.SectionType.EDUCATION;
+import static ru.javawebinar.basejava.model.SectionType.EXPERIENCE;
 
 public class ResumeServlet extends HttpServlet {
     private Storage storage;
@@ -42,6 +47,27 @@ public class ResumeServlet extends HttpServlet {
                 break;
             case "add":
                 resume = new Resume();
+                for (ContactType type : ContactType.values()) {
+                    resume.addContact(type, "");
+                }
+                for (SectionType type : SectionType.values()) {
+                    Section section = null;
+                    switch (type) {
+                        case OBJECTIVE:
+                        case PERSONAL:
+                            section = new TextSection("");
+                            break;
+                        case ACHIEVEMENT:
+                        case QUALIFICATIONS:
+                            section = new TextListSection(Collections.singletonList(""));
+                            break;
+                        case EXPERIENCE:
+                        case EDUCATION:
+                            section = new CompanySection(Collections.singletonList(new Company("", "", new Company.Position(YearMonth.parse("2000-01"), YearMonth.parse("2000-01"), "", ""))));
+                            break;
+                    }
+                    resume.addSection(type, section);
+                }
                 break;
             default:
                 throw new IllegalArgumentException("Action " + action + " is illegal");
@@ -80,10 +106,36 @@ public class ResumeServlet extends HttpServlet {
                         break;
                     case ACHIEVEMENT:
                     case QUALIFICATIONS:
-                        resume.addSection(type, new TextListSection(value));
+                        resume.addSection(type, new TextListSection(value.split("\n")));
                         break;
-                }
-            } else if (type != EDUCATION && type != EXPERIENCE){
+                    case EXPERIENCE:
+                    case EDUCATION:
+                        String[] companies = req.getParameterValues(type.name());
+                        String[] positions = req.getParameterValues(type.name() + "numberPosition");
+                        String[] startDateList = req.getParameterValues(type.name() + "startDate");
+                        String[] endDateList = req.getParameterValues(type.name() + "endDate");
+                        String[] titleList = req.getParameterValues(type.name() + "title");
+                        String[] descriptionList = req.getParameterValues(type.name() + "description");
+                        List<Company> company = new ArrayList<>();
+                        int count = 0;
+                        for (int i = 0; i < companies.length; i++) {
+                            String name = req.getParameterValues(type.name())[i];
+                            String url = req.getParameterValues(type.name() + "url")[i];
+                            List<Company.Position> positionList = new ArrayList<>();
+                            for (int j = 0; j < Integer.parseInt(positions[i]); j++) {
+                                String startDate = startDateList[count];
+                                String endDate = endDateList[count];
+                                String title = titleList[count];
+                                String description = descriptionList[count];
+                                positionList.add(new Company.Position(YearMonth.parse(startDate), YearMonth.parse(endDate), title, description));
+                                count++;
+                            }
+                            company.add(new Company(new Link(name, url), positionList));
+                        }
+                        resume.addSection(type, new CompanySection(company));
+                        break;
+            }
+            } else if (type != EDUCATION && type != EXPERIENCE) {
                 resume.getSections().remove(type);
             }
         }

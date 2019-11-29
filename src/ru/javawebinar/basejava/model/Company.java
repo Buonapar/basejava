@@ -8,7 +8,6 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 import java.time.YearMonth;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -35,8 +34,11 @@ public class Company implements Serializable, Comparable<Company> {
     }
 
     public List<Position> getPositions() {
-        Collections.sort(positions);
         return positions;
+    }
+
+    public String getName() {
+        return homepage.getName();
     }
 
     public YearMonth getDate() {
@@ -45,12 +47,12 @@ public class Company implements Serializable, Comparable<Company> {
 
     public String toPrintHtml() {
         StringBuilder result = new StringBuilder();
-        result.append("<table cellpadding=\"8\">");
+        result.append("<table cellpadding=\"8\">").
+                append("<tr><td colspan=\"2\"><b>").
+                append(toLink(homepage)).
+                append("</b></td></tr>");
         for (Position position : getPositions()) {
-            result.append("<tr><td colspan=\"2\"><b>").
-                    append(toLink(homepage)).
-                    append("</b></td></tr>").
-                    append(position.toPrintHtml());
+            result.append(position.toPrintHtml());
         }
         result.append("</table>");
         return result.toString();

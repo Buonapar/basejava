@@ -25,13 +25,13 @@ public class CompanySection extends Section {
     }
 
     public List<Company> get() {
-        Collections.sort(descriptions);
         return descriptions;
     }
 
     @Override
     public String toPrintHtml() {
         StringBuilder stringBuilder = new StringBuilder();
+        Collections.sort(descriptions);
         for (Company company : get()) {
             stringBuilder.append(company.toPrintHtml());
         }
