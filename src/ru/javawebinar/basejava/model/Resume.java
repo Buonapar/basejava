@@ -71,8 +71,18 @@ public class Resume implements Comparable<Resume>, Serializable {
         }
     }
 
-    public CompanySection CompanySection(SectionType sectionType) {
-        return (CompanySection) sections.get(sectionType);
+    private CompanySection companySection(String sectionType) {
+        return (CompanySection)sections.get(SectionType.valueOf(sectionType));
+    }
+
+    public List<Company> getCompanyList(String sectionType) {
+        List<Company> companies = companySection(sectionType).get();
+        Collections.sort(companies);
+        return companies;
+    }
+
+    public List<Company.Position> getPositionList(String sectionType, String companyName) {
+        return companySection(sectionType).getCompany(companyName).getPositions();
     }
 
     public void addContact(ContactType contactType, String contact) {
@@ -81,6 +91,26 @@ public class Resume implements Comparable<Resume>, Serializable {
 
     public void addSection(SectionType sectionType,Section section) {
         sections.put(sectionType, section);
+    }
+
+    public void deleteCompany(String sectionType, String companyName) {
+        companySection(sectionType).deleteCompany(companyName);
+    }
+
+    public void deletePosition(String sectionType, String companyName, String positionTitle) {
+        companySection(sectionType).deletePosition(companyName, positionTitle);
+    }
+
+    public void addCompany(String sectionType, Company company) {
+        companySection(sectionType).addCompany(company);
+    }
+
+    public void addPosition(String sectionType, String companyName, Company.Position position) {
+        companySection(sectionType).addPosition(companyName, position);
+    }
+
+    public Company getCompany(String sectionType, String companyName) {
+        return companySection(sectionType).getCompany(companyName);
     }
 
     @Override

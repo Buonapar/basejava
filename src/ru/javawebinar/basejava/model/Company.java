@@ -37,15 +37,25 @@ public class Company implements Serializable, Comparable<Company> {
         return positions;
     }
 
+    private Position getPosition(String title) {
+        Position position = null;
+        for (Position p : positions) {
+            if (p.title.equals(title)) {
+                position = p;
+            }
+        }
+        return position;
+    }
+
     public String getName() {
         return homepage.getName();
     }
 
-    public YearMonth getDate() {
+    private YearMonth getDate() {
         return getPositions().get(0).endDate;
     }
 
-    public String toPrintHtml() {
+    String toPrintHtml() {
         StringBuilder result = new StringBuilder();
         result.append("<table cellpadding=\"8\">").
                 append("<tr><td colspan=\"2\"><b>").
@@ -61,6 +71,14 @@ public class Company implements Serializable, Comparable<Company> {
     private static String toLink(Link homepage) {
         return homepage.getUrl().isEmpty() ? homepage.getName() :
                 "<a href='" + homepage.getUrl() + "'>" + homepage.getName() + "</a>";
+    }
+
+    void deletePosition(String positionTitle) {
+        positions.remove(getPosition(positionTitle));
+    }
+
+    void addPosition(Position position) {
+        positions.add(position);
     }
 
     @Override
@@ -132,7 +150,7 @@ public class Company implements Serializable, Comparable<Company> {
             return description;
         }
 
-        public String toPrintHtml(){
+        String toPrintHtml(){
             return "<tr><td width=\"130\" style=\"vertical-align: top\">" +
                     formatDate(startDate) +
                     " - " +

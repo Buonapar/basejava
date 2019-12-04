@@ -28,6 +28,34 @@ public class CompanySection extends Section {
         return descriptions;
     }
 
+    Company getCompany(String companyName) {
+        Company company = null;
+        for (Company c : descriptions) {
+            if (c.getName().equals(companyName)) {
+                company = c;
+            }
+        }
+        return company;
+    }
+
+    void deleteCompany(String companyName) {
+        descriptions.remove(getCompany(companyName));
+    }
+
+    void deletePosition(String companyName, String positionTitle) {
+        getCompany(companyName).deletePosition(positionTitle);
+    }
+
+    void addCompany(Company company) {
+        descriptions.add(company);
+    }
+
+    void addPosition(String companyName, Company.Position position) {
+        getCompany(companyName).addPosition(position);
+    }
+
+
+
     @Override
     public String toPrintHtml() {
         StringBuilder stringBuilder = new StringBuilder();

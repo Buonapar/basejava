@@ -41,6 +41,39 @@ public class ResumeServlet extends HttpServlet {
                 storage.delete(uuid);
                 resp.sendRedirect("resume");
                 return;
+            case "deleteCompany":
+                String sectionType = req.getParameter("sectionType");
+                String companyName = req.getParameter("company");
+                resume = storage.get(uuid);
+                resume.deleteCompany(sectionType, companyName);
+                storage.update(resume);
+                resp.sendRedirect("resume?uuid=" + resume.getUuid() +"&action=edit#companyName");
+                return;
+            case "deletePosition":
+                sectionType = req.getParameter("sectionType");
+                companyName = req.getParameter("company");
+                String position = req.getParameter("positionTitle");
+                resume = storage.get(uuid);
+                resume.deletePosition(sectionType, companyName, position);
+                storage.update(resume);
+                resp.sendRedirect("resume?uuid=" + resume.getUuid() +"&action=edit#companyName");
+                return;
+            case "addCompany":
+                resume = storage.get(uuid);
+                sectionType = req.getParameter("sectionType");
+                req.setAttribute("section", SectionType.valueOf(sectionType));
+                req.setAttribute("resume", resume);
+                req.getRequestDispatcher("/WEB-INF/jsp/company.jsp").forward(req, resp);
+                return;
+            case "addPosition":
+                resume = storage.get(uuid);
+                sectionType = req.getParameter("sectionType");
+                companyName = req.getParameter("company");
+                req.setAttribute("section", SectionType.valueOf(sectionType));
+                req.setAttribute("company", resume.getCompany(sectionType, companyName));
+                req.setAttribute("resume", resume);
+                req.getRequestDispatcher("/WEB-INF/jsp/position.jsp").forward(req, resp);
+                return;
             case "view":
             case "edit":
                 resume = storage.get(uuid);
@@ -81,7 +114,26 @@ public class ResumeServlet extends HttpServlet {
         req.setCharacterEncoding("UTF-8");
         String uuid = req.getParameter("uuid");
         String fullName = req.getParameter("fullName");
+        String section = req.getParameter("section");
+        String companyName = req.getParameter("company");
+        if (companyName == null) {
+            companyName = "";
+        }
         Resume resume;
+        if (!section.isEmpty()) {
+            resume = storage.get(uuid);
+            if (!companyName.isEmpty()) {
+                resume.addPosition(section, companyName, createPosition(req));
+            } else {
+                String name = req.getParameter("name");
+                String url = req.getParameter("url");
+                Company company = new Company(new Link(name, url), Collections.singletonList(createPosition(req)));
+                resume.addCompany(section, company);
+            }
+            storage.update(resume);
+            resp.sendRedirect("resume?uuid=" + resume.getUuid() +"&action=edit#companyName");
+            return;
+        }
         if (uuid.isEmpty()) {
             resume = new Resume(fullName);
         } else {
@@ -145,5 +197,13 @@ public class ResumeServlet extends HttpServlet {
             storage.update(resume);
         }
         resp.sendRedirect("resume");
+    }
+
+    private Company.Position createPosition(HttpServletRequest req) {
+        String startDate = req.getParameter("startDate");
+        String endDate = req.getParameter("endDate");
+        String title = req.getParameter("title");
+        String description = req.getParameter("description");
+        return new Company.Position(YearMonth.parse(startDate), YearMonth.parse(endDate), title, description);
     }
 }

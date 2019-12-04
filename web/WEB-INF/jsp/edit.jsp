@@ -14,6 +14,7 @@
 <section>
     <form method="post" action="resume" enctype="application/x-www-form-urlencoded">
             <input type="hidden" name="uuid" value="${resume.uuid}">
+        <input type="hidden" name="section" value="">
         <dl>
             <dt>Имя</dt>
             <dd><input type="text" name="fullName" size="50" value="${resume.fullName}"></dd>
@@ -35,21 +36,23 @@
                         </dl>
                     </c:if>
                 <c:if test="${type.name() == 'EXPERIENCE' || type.name() == 'EDUCATION'}">
-                    <h3>${type.title}:</h3>
-                    <c:forEach var="companies" items="${resume.CompanySection(type).get()}">
+                    <h3>${type.title}:</h3><button type="button"><a href="resume?uuid=${resume.uuid}&action=addCompany&sectionType=${type.name()}"><img src="img/add.png">Добавить компанию</a></button>
+                    <c:forEach var="companies" items="${resume.getCompanyList(type)}">
                         <dl>
-                            <dt style="margin-left: 10px">Название компании</dt>
+                            <dt id="companyName" style="margin-left: 10px">Название компании</dt><button type="button"><a href="resume?uuid=${resume.uuid}&action=deleteCompany&sectionType=${type.name()}&company=${companies.homepage.getName()}"><img src="img/delete.png">Удалить компанию</a></button>
                             <dd><input type="text" name="${type.name()}" size="30" value="${companies.homepage.getName()}"></dd>
                         </dl>
                         <dl>
                             <dt style="margin-left: 10px">Сайт компании</dt>
                             <dd><input type="text" name="${type.name()}url" size="30" value="${companies.homepage.getUrl()}"></dd>
                         </dl>
-                        <c:forEach var="positions" items="${companies.getPositions()}">
-                            <input type="hidden" name="${type.name()}numberPosition" value="${companies.getPositions().size()}" >
-                            <dt style="margin-left: 20px">Позиции</dt>
+                        <button type="button"><a href="resume?uuid=${resume.uuid}&action=addPosition&sectionType=${type.name()}&company=${companies.homepage.getName()}"><img src="img/add.png">Добавить позицию</a></button>
+                        <br>
+                        <h4 style="margin-left: 20px">Позиции</h4>
+                        <c:forEach var="positions" items="${resume.getPositionList(type, companies.homepage.getName())}">
+                            <input type="hidden" name="${type.name()}numberPosition" value="${resume.getPositionList(type, companies.homepage.getName()).size()}" >
                             <dl>
-                                <dt style="margin-left: 30px">Должность</dt>
+                                <dt style="margin-left: 30px">Должность</dt><button type="button"><a href="resume?uuid=${resume.uuid}&action=deletePosition&sectionType=${type.name()}&company=${companies.homepage.getName()}&positionTitle=${positions.getTitle()}"><img src="img/delete.png">Удалить позицию</a></button>
                                 <dd><input type="text" name="${type.name()}title" size="30" value="${positions.getTitle()}"></dd>
                             </dl>
                             <dl>
